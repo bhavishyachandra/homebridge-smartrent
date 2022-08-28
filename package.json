@@ -18,7 +18,7 @@
   "author": "Hunter Creery",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hpcreery/homebridge-smartrent.git"
+    "url": "git+https://github.com/hpcreery/homebridge-smartrent.git"
   },
   "engines": {
     "node": ">=12",
@@ -78,5 +78,10 @@
     "semantic-release": "^19.0.2",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5"
-  }
+  },
+  "types": "./dist/index.d.ts",
+  "bugs": {
+    "url": "https://github.com/hpcreery/homebridge-smartrent/issues"
+  },
+  "homepage": "https://github.com/hpcreery/homebridge-smartrent#readme"
 }
