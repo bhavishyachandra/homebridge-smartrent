@@ -8,8 +8,9 @@
   Homebridge SmartRent
 </h1>
 
-[![npm downloads](https://badgen.net/npm/dt/@hpcreery/homebridge-smartrent?color=purple)](https://www.npmjs.com/package/@hpcreery/homebridge-smartrent)
-[![npm version](https://badgen.net/npm/v/@hpcreery/homebridge-smartrent?color=purple)](https://www.npmjs.com/package/@hpcreery/homebridge-smartrent)
+[![npm version](https://badgen.net/npm/v/@hpcreery/homebridge-smartrent?color=purple&icon=npm&label)](https://www.npmjs.com/package/@hpcreery/homebridge-smartrent)
+[![npm downloads](https://badgen.net/github/last-commit/hpcreery/homebridge-smartrent?color=cyan&icon=github)](https://github.com/hpcreery/homebridge-smartrent)
+[![npm version](https://badgen.net/github/stars/hpcreery/homebridge-smartrent?color=cyan&icon=github)](https://github.com/hpcreery/homebridge-smartrent)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/hpcreery/homebridge-smartrent.svg)](https://github.com/hpcreery/homebridge-smartrent/pulls)
 [![GitHub issues](https://img.shields.io/github/issues/hpcreery/homebridge-smartrent.svg)](https://github.com/hpcreery/homebridge-smartrent/issues)
 
