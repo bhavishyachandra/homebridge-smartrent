@@ -1,9 +1,3 @@
-# ⚠️ Archival Notice
-
-**I've moved to a different apartment and no longer have access to a SmartRent installation. Therefore I won't be maintaining or testing this plugin and have archived the repository. [Keep an eye out for forks](https://github.com/Burry/homebridge-smartrent/network/members)!**
-
----
-
 <span align="center">
 
 <h1>
@@ -30,6 +24,7 @@ Homebridge SmartRent currently supports these devices through a SmartRent hub:
 - 🔒 Locks
 - 💧 Leak sensors
 - 🔌 Switches
+- 🌡 Thermostats
 
 If you have another device connected to SmartRent and would like to see it supported in this plugin, please open a [device request](https://github.com/Burry/homebridge-smartrent/issues/new?assignees=&labels=enhancement,new%20device&template=device-request.md&title=New%20device:) issue.
 
@@ -141,8 +136,6 @@ This will launch an instance of Homebridge in debug mode which will restart ever
 ## License
 
 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B9027%2Fgithub.com%2FBurry%2Fhomebridge-smartrent.svg?type=large)](https://app.fossa.com/projects/custom%2B9027%2Fgithub.com%2FBurry%2Fhomebridge-smartrent?ref=badge_large)
 
 ## Disclaimer
 

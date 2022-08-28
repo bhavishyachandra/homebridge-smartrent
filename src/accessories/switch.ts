@@ -2,6 +2,7 @@ import { Service, CharacteristicValue } from 'homebridge';
 import { SmartRentPlatform } from '../platform';
 import type { SmartRentAccessory } from '.';
 import { Switch, SwitchAttributes } from './../devices';
+import { WSEvent } from '../lib/client';
 
 /**
  * Switch Accessory
@@ -58,11 +59,36 @@ export class SwitchAccessory {
       .getCharacteristic(this.platform.Characteristic.On)
       .onGet(this.handleOnGet.bind(this))
       .onSet(this.handleOnSet.bind(this));
+
+    // subscribe to device state changed events
+    this.platform.smartRentApi.websocket.event[this.state.deviceId] = (
+      event: WSEvent
+    ) => this.handleDeviceStateChanged(event);
   }
 
   private static _getOnCharacteristicValue(on: boolean) {
     const currentValue = on ? 1 : 0;
     return currentValue;
+  }
+
+  /**
+   * Handle device state changed events
+   */
+  async handleDeviceStateChanged(event: WSEvent) {
+    this.platform.log.debug('Received websocket Switch event:', event);
+    switch (event.name) {
+      case 'on':
+        this.state.on.current = SwitchAccessory._getOnCharacteristicValue(
+          event.last_read_state === 'true'
+        );
+        this.service.updateCharacteristic(
+          this.platform.Characteristic.On,
+          this.state.on.current
+        );
+        break;
+      default:
+        break;
+    }
   }
 
   /**

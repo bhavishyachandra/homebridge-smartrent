@@ -1,9 +1,12 @@
 import { SmartRentPlatform } from '../platform';
-import { SmartRentApiClient } from './client';
+import { SmartRentApiClient, SmartRentWebsocketClient } from './client';
 import {
   BaseDeviceResponse,
+  BaseDeviceDataResponse,
   BaseDeviceAttributes,
   DeviceDataUnion,
+  DeviceData,
+  Device,
 } from '../devices';
 
 type UnitData = {
@@ -80,11 +83,17 @@ type RoomRecords = {
   data: RoomRecordsData[];
 };
 
+type DeviceRecords = {
+  data: DeviceDataUnion[];
+};
+
 export class SmartRentApi {
   public readonly client: SmartRentApiClient;
+  public readonly websocket: SmartRentWebsocketClient;
 
   constructor(private readonly platform: SmartRentPlatform) {
     this.client = new SmartRentApiClient(platform);
+    this.websocket = new SmartRentWebsocketClient(platform);
   }
 
   public async discoverDevices() {
@@ -107,20 +116,24 @@ export class SmartRentApi {
       return [];
     }
 
-    // Get the unit's rooms
-    const rooms = await this.client.get<RoomRecords>(`/hubs/${hubId}/rooms`);
-    const roomsData = rooms.data;
-    this.platform.log.info(`Found ${roomsData.length} rooms`);
-
-    // Get the unit's devices
-    const devicesData = roomsData.reduce(
-      (acc: DeviceDataUnion[], room) => [...acc, ...room.devices],
-      []
+    // Get the devices in the hub
+    const devices = await this.client.get<DeviceRecords>(
+      `/hubs/${hubId}/devices`
     );
+    const devicesData = devices.data;
+    this.platform.log.info(`Devices Found: `, devicesData);
+
     if (devicesData.length) {
       this.platform.log.info(`Found ${devicesData.length} devices`);
     } else {
       this.platform.log.error('No devices found');
+    }
+
+    for (const i in devicesData) {
+      this.platform.log.debug('device: ', devicesData[i]);
+      const device = devicesData[i];
+      this.websocket.subscribeDevice(device.id);
+      // (await websocket.wsClient).send(JSON.stringify(<WSPayload>[null, null, `devices:${device.id}`, 'phx_join', {}]))
     }
 
     return devicesData;
@@ -130,20 +143,32 @@ export class SmartRentApi {
     hubId: string,
     deviceId: string
   ) {
-    const lockData = await this.client.get<Device>(
+    const device = await this.client.get<Device>(
       `/hubs/${hubId}/devices/${deviceId}`
     );
-    return lockData.data.attributes;
+    // this.platform.log.debug("device: ", device)
+    return device.data.attributes;
+  }
+
+  public async getData<Device extends BaseDeviceDataResponse>(
+    hubId: string,
+    deviceId: string
+  ) {
+    const device = await this.client.get<Device>(
+      `/hubs/${hubId}/devices/${deviceId}`
+    );
+    this.platform.log.debug('getData: ', device);
+    return device.data;
   }
 
   public async setState<
     Device extends BaseDeviceResponse,
     A extends BaseDeviceAttributes
   >(hubId: string, deviceId: string, attributes: Partial<A>) {
-    const lockData = await this.client.patch<Device>(
+    const device = await this.client.patch<Device>(
       `/hubs/${hubId}/devices/${deviceId}`,
       { attributes }
     );
-    return lockData.data.attributes;
+    return device.data.attributes;
   }
 }

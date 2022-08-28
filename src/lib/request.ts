@@ -2,6 +2,10 @@ export const API_URL = 'https://control.smartrent.com/api/v1';
 
 export const APP_VERSION = '2.23.0';
 
+export const WS_API_URL = 'wss://control.smartrent.com/socket/websocket';
+
+export const WS_VERSION = '2.0.0';
+
 const USER_AGENT = `SmartRent/${APP_VERSION} (com.smartrent.resident; build:1672; iOS 15.2.1) Alamofire/4.9.1`;
 
 const COMMON_HEADERS = {

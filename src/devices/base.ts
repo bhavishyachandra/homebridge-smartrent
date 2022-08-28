@@ -45,3 +45,7 @@ export interface Device<
 export type BaseDeviceResponse = {
   data: { attributes: BaseDeviceAttributes };
 };
+
+export type BaseDeviceDataResponse = {
+  data: DeviceData<BaseDeviceAttributes, string, boolean>;
+};

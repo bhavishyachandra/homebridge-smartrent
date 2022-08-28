@@ -12,6 +12,7 @@ import {
   LockAccessory,
   LeakSensorAccessory,
   SwitchAccessory,
+  ThermostatAccessory,
 } from './accessories';
 import { SmartRentApi } from './lib/api';
 import { DeviceDataUnion } from './devices';
@@ -62,7 +63,8 @@ export class SmartRentPlatform implements DynamicPlatformPlugin {
     let Accessory:
       | typeof LeakSensorAccessory
       | typeof LockAccessory
-      | typeof SwitchAccessory;
+      | typeof SwitchAccessory
+      | typeof ThermostatAccessory;
     switch (device.type) {
       case 'sensor_notification':
         if ('leak' in device.attributes) {
@@ -77,6 +79,9 @@ export class SmartRentPlatform implements DynamicPlatformPlugin {
         break;
       case 'switch_binary':
         Accessory = SwitchAccessory;
+        break;
+      case 'thermostat':
+        Accessory = ThermostatAccessory;
         break;
       default:
         this.log.error(
