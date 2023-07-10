@@ -220,6 +220,17 @@ export class ThermostatAccessory {
           mode
         );
         break;
+      case 'cooling_setpoint':
+        const coolingSetpoint = this.toTemperatureCharacteristic(
+          Number(event.last_read_state)
+        );
+        this.state.cooling_threshold_temperature.current = coolingSetpoint;
+        this.state.cooling_threshold_temperature.target = coolingSetpoint;
+        this.thermostatService.updateCharacteristic(
+          this.platform.Characteristic.CoolingThresholdTemperature,
+          coolingSetpoint
+        );
+        break;
       case 'heating_setpoint':
         const heatingSetpoint = this.toTemperatureCharacteristic(
           Number(event.last_read_state)
