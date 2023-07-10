@@ -192,26 +192,32 @@ export class ThermostatAccessory {
         const mode = this.toCurrentHeatingCoolingStateCharacteristic(
           event.last_read_state as ThermostatMode
         );
-        this.state.heating_cooling_state.current = mode;
+        let actualMode = mode;
+        if (mode === this.platform.Characteristic.TargetHeatingCoolingState.AUTO) {
+          // Determine if heating or cooling based on target and current temperature
+          if (
+            this.state.target_temperature.current <
+            this.state.current_temperature.current
+          ) {
+            actualMode = this.platform.Characteristic.CurrentHeatingCoolingState.COOL;
+          } else if (
+            this.state.target_temperature.current >
+            this.state.current_temperature.current
+          ) {
+            actualMode = this.platform.Characteristic.CurrentHeatingCoolingState.HEAT;
+          } else {
+            actualMode = this.platform.Characteristic.CurrentHeatingCoolingState.OFF;
+          }
+        }
+        this.state.heating_cooling_state.current = actualMode;
         this.state.heating_cooling_state.target = mode;
         this.thermostatService.updateCharacteristic(
           this.platform.Characteristic.CurrentHeatingCoolingState,
-          mode
+          actualMode
         );
         this.thermostatService.updateCharacteristic(
           this.platform.Characteristic.TargetHeatingCoolingState,
           mode
-        );
-        break;
-      case 'cooling_setpoint':
-        const coolingSetpoint = this.toTemperatureCharacteristic(
-          Number(event.last_read_state)
-        );
-        this.state.cooling_threshold_temperature.current = coolingSetpoint;
-        this.state.cooling_threshold_temperature.target = coolingSetpoint;
-        this.thermostatService.updateCharacteristic(
-          this.platform.Characteristic.CoolingThresholdTemperature,
-          coolingSetpoint
         );
         break;
       case 'heating_setpoint':
@@ -256,8 +262,6 @@ export class ThermostatAccessory {
         return this.platform.Characteristic.CurrentHeatingCoolingState.COOL;
       case 'heat':
         return this.platform.Characteristic.CurrentHeatingCoolingState.HEAT;
-      case 'auto':
-        return this.platform.Characteristic.TargetHeatingCoolingState.AUTO;
       default:
         return this.platform.Characteristic.TargetHeatingCoolingState.OFF;
     }
