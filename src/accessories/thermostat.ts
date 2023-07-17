@@ -189,7 +189,7 @@ export class ThermostatAccessory {
         );
         break;
       case 'mode':
-        const mode = this.toCurrentHeatingCoolingStateCharacteristic(
+        const mode = this.toTargetHeatingCoolingStateCharacteristic(
           event.last_read_state as ThermostatMode
         );
         let actualMode = mode;
