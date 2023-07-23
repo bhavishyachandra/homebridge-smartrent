@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.0](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.2.0...v1.3.0) (2023-07-23)
+
+
+### Features
+
+* lint ([bd0c055](https://github.com/bhavishyachandra/homebridge-smartrent/commit/bd0c05599b254dc54d3bc9345766fb0a6c348449))
+
 ## [1.0.3](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.0.2...v1.0.3) (2022-08-12)
 
 
