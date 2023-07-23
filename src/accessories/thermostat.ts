@@ -178,7 +178,7 @@ export class ThermostatAccessory {
       `Device ${this.state.deviceId} state changed: ${JSON.stringify(event)}`
     );
     switch (event.name) {
-      case 'fan_mode':
+      case 'fan_mode': {
         const fanMode = this.toFanOnCharacteristic(
           event.last_read_state as ThermostatFanMode
         );
@@ -188,25 +188,31 @@ export class ThermostatAccessory {
           fanMode
         );
         break;
-      case 'mode':
+      }
+      case 'mode': {
         const mode = this.toTargetHeatingCoolingStateCharacteristic(
           event.last_read_state as ThermostatMode
         );
         let actualMode = mode;
-        if (mode === this.platform.Characteristic.TargetHeatingCoolingState.AUTO) {
+        if (
+          mode === this.platform.Characteristic.TargetHeatingCoolingState.AUTO
+        ) {
           // Determine if heating or cooling based on target and current temperature
           if (
             this.state.target_temperature.current <
             this.state.current_temperature.current
           ) {
-            actualMode = this.platform.Characteristic.CurrentHeatingCoolingState.COOL;
+            actualMode =
+              this.platform.Characteristic.CurrentHeatingCoolingState.COOL;
           } else if (
             this.state.target_temperature.current >
             this.state.current_temperature.current
           ) {
-            actualMode = this.platform.Characteristic.CurrentHeatingCoolingState.HEAT;
+            actualMode =
+              this.platform.Characteristic.CurrentHeatingCoolingState.HEAT;
           } else {
-            actualMode = this.platform.Characteristic.CurrentHeatingCoolingState.OFF;
+            actualMode =
+              this.platform.Characteristic.CurrentHeatingCoolingState.OFF;
           }
         }
         this.state.heating_cooling_state.current = actualMode;
@@ -220,7 +226,8 @@ export class ThermostatAccessory {
           mode
         );
         break;
-      case 'cooling_setpoint':
+      }
+      case 'cooling_setpoint': {
         const coolingSetpoint = this.toTemperatureCharacteristic(
           Number(event.last_read_state)
         );
@@ -231,7 +238,8 @@ export class ThermostatAccessory {
           coolingSetpoint
         );
         break;
-      case 'heating_setpoint':
+      }
+      case 'heating_setpoint': {
         const heatingSetpoint = this.toTemperatureCharacteristic(
           Number(event.last_read_state)
         );
@@ -242,7 +250,8 @@ export class ThermostatAccessory {
           heatingSetpoint
         );
         break;
-      case 'current_temp':
+      }
+      case 'current_temp': {
         const temperature = this.toTemperatureCharacteristic(
           Number(event.last_read_state)
         );
@@ -252,7 +261,8 @@ export class ThermostatAccessory {
           temperature
         );
         break;
-      case 'current_humidity':
+      }
+      case 'current_humidity': {
         const humidity = Math.round(Number(event.last_read_state));
         this.state.current_relative_humidity.current = humidity;
         this.thermostatService.updateCharacteristic(
@@ -260,6 +270,7 @@ export class ThermostatAccessory {
           humidity
         );
         break;
+      }
     }
   }
 

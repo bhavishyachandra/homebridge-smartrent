@@ -144,10 +144,6 @@ export class LockAccessory {
   async handleLockTargetStateSet(value: CharacteristicValue) {
     this.platform.log.debug('Triggered SET LockTargetState:', value);
     this.state.locked.target = value;
-    const lockAttributes = await this.platform.smartRentApi.setState<
-      Lock,
-      LockAttributes
-    >(this.state.hubId, this.state.deviceId, { locked: !!value });
     this.platform.log.debug('Triggered SET LockTargetState:', value);
   }
 
@@ -157,7 +153,7 @@ export class LockAccessory {
   async handleLockEvent(event: WSEvent) {
     this.platform.log.debug('Recieved event on Lock: ', event);
     switch (event.name) {
-      case 'locked':
+      case 'locked': {
         const currentValue = this._getLockStateCharacteristicValue(
           event.last_read_state === 'true'
         );
@@ -170,6 +166,7 @@ export class LockAccessory {
           currentValue
         );
         break;
+      }
       case 'notifications':
         break;
     }
