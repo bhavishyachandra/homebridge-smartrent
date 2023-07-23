@@ -5,8 +5,6 @@ import {
   BaseDeviceDataResponse,
   BaseDeviceAttributes,
   DeviceDataUnion,
-  DeviceData,
-  Device,
 } from '../devices';
 
 type UnitData = {
@@ -72,17 +70,6 @@ type UnitRecords = {
   total_records: 1;
 };
 
-type RoomRecordsData = {
-  icon: string | null;
-  id: number;
-  name: string;
-  devices: DeviceDataUnion[];
-};
-
-type RoomRecords = {
-  data: RoomRecordsData[];
-};
-
 type DeviceRecords = {
   data: DeviceDataUnion[];
 };
@@ -121,7 +108,7 @@ export class SmartRentApi {
       `/hubs/${hubId}/devices`
     );
     const devicesData = devices.data;
-    this.platform.log.info(`Devices Found: `, devicesData);
+    this.platform.log.info('Devices Found: ', devicesData);
 
     if (devicesData.length) {
       this.platform.log.info(`Found ${devicesData.length} devices`);

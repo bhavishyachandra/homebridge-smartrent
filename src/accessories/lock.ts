@@ -1,7 +1,6 @@
 import { Service, CharacteristicValue } from 'homebridge';
 import { SmartRentPlatform } from '../platform';
 import type { SmartRentAccessory } from '.';
-import { Lock, LockAttributes } from './../devices';
 import { WSEvent } from '../lib/client';
 
 /**
