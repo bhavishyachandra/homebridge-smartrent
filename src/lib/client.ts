@@ -125,7 +125,7 @@ export class SmartRentApiClient {
 export class SmartRentWebsocketClient extends SmartRentApiClient {
   public wsClient: Promise<WebSocket>;
   public event: Object;
-  private devices: number[];
+  private devices: Number[];
 
   constructor(readonly platform: SmartRentPlatform) {
     super(platform);
@@ -141,7 +141,7 @@ export class SmartRentWebsocketClient extends SmartRentApiClient {
         _subscriptions.add(func);
       },
       get() {
-        const emit = (...args: unknown[]) => {
+        var emit = (...args: any[]) => {
           _subscriptions.forEach(f => f(...args));
         };
 
@@ -187,7 +187,7 @@ export class SmartRentWebsocketClient extends SmartRentApiClient {
     this.platform.log.debug(
       `WebSocket message received: Data: ${message.data}`
     );
-    const data: WSPayload = JSON.parse(String(message.data));
+    let data: WSPayload = JSON.parse(String(message.data));
     if (data[3].includes('attribute_state')) {
       const device = data[2].split(':')[1];
       this.platform.log.debug(String(data[4]));
@@ -210,16 +210,15 @@ export class SmartRentWebsocketClient extends SmartRentApiClient {
    * Adds device to websocket client subsciption list and announces events to device handlers
    * @param deviceId Device ID
    */
-  public async subscribeDevice(deviceId: number) {
+  public async subscribeDevice(deviceId: Number) {
     this.platform.log.debug(`Subscribing to device: ${deviceId}`);
     if (!this.devices.includes(deviceId)) {
       this.devices.push(deviceId);
       this._emitize(this.event, `${deviceId}`);
     }
     try {
-      if ((await this.wsClient).readyState !== WebSocket.OPEN) {
+      if ((await this.wsClient).readyState !== WebSocket.OPEN)
         throw 'WebSocket not ready';
-      }
       (await this.wsClient).send(
         JSON.stringify(<WSPayload>[
           null,

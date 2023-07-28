@@ -178,7 +178,7 @@ export class ThermostatAccessory {
       `Device ${this.state.deviceId} state changed: ${JSON.stringify(event)}`
     );
     switch (event.name) {
-      case 'fan_mode': {
+      case 'fan_mode':
         const fanMode = this.toFanOnCharacteristic(
           event.last_read_state as ThermostatFanMode
         );
@@ -188,8 +188,7 @@ export class ThermostatAccessory {
           fanMode
         );
         break;
-      }
-      case 'mode': {
+      case 'mode':
         const mode = this.toTargetHeatingCoolingStateCharacteristic(
           event.last_read_state as ThermostatMode
         );
@@ -226,8 +225,7 @@ export class ThermostatAccessory {
           mode
         );
         break;
-      }
-      case 'cooling_setpoint': {
+      case 'cooling_setpoint':
         const coolingSetpoint = this.toTemperatureCharacteristic(
           Number(event.last_read_state)
         );
@@ -238,8 +236,7 @@ export class ThermostatAccessory {
           coolingSetpoint
         );
         break;
-      }
-      case 'heating_setpoint': {
+      case 'heating_setpoint':
         const heatingSetpoint = this.toTemperatureCharacteristic(
           Number(event.last_read_state)
         );
@@ -250,8 +247,7 @@ export class ThermostatAccessory {
           heatingSetpoint
         );
         break;
-      }
-      case 'current_temp': {
+      case 'current_temp':
         const temperature = this.toTemperatureCharacteristic(
           Number(event.last_read_state)
         );
@@ -261,8 +257,7 @@ export class ThermostatAccessory {
           temperature
         );
         break;
-      }
-      case 'current_humidity': {
+      case 'current_humidity':
         const humidity = Math.round(Number(event.last_read_state));
         this.state.current_relative_humidity.current = humidity;
         this.thermostatService.updateCharacteristic(
@@ -270,7 +265,6 @@ export class ThermostatAccessory {
           humidity
         );
         break;
-      }
     }
   }
 
