@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.0](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.3.6...v1.4.0) (2023-07-28)
+
+
+### Features
+
+* **multi-level-switches:** added support ([0936473](https://github.com/bhavishyachandra/homebridge-smartrent/commit/0936473d20a7b48f74866cc01cf5bb516ce32d84))
+
 ## [1.3.6](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.3.5...v1.3.6) (2023-07-28)
 
 
