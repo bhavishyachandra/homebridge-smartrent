@@ -24,13 +24,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "lts/*"
+          node-version: 'lts/*'
       - name: Install dependencies
         run: npm clean-install
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
