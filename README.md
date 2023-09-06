@@ -27,6 +27,7 @@ Homebridge SmartRent currently supports these devices through a SmartRent hub:
 - 💧 Leak sensors
 - 🔌 Switches
 - 🌡 Thermostats
+- 🎚 Multilevel (Dimmer) Switches
 
 ## ✅ Usage
 
