@@ -136,7 +136,7 @@ This will launch an instance of Homebridge in debug mode which will restart ever
 
 ## License
 
-[Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+[GNU GENERAL PUBLIC LICENSE, Version 3](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbhavishyachandra%2Fhomebridge-smartrent.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbhavishyachandra%2Fhomebridge-smartrent?ref=badge_large)
 
