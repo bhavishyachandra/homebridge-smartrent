@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.2](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.4.1...v1.4.2) (2023-09-06)
+
+
+### Bug Fixes
+
+* **license:** switch to GPLv3 ([2a1167e](https://github.com/bhavishyachandra/homebridge-smartrent/commit/2a1167ed4a2c00fa665fb35fe65d15b2b7bd3125))
+
 ## [1.4.1](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.4.0...v1.4.1) (2023-09-06)
 
 
