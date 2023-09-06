@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.1](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.4.0...v1.4.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* **package-lock:** fixing package-lock.json ([65c998b](https://github.com/bhavishyachandra/homebridge-smartrent/commit/65c998b00ec28189d2fcf8262d141d9a81d3d611))
+
 ## [1.4.0](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.3.6...v1.4.0) (2023-07-28)
 
 
