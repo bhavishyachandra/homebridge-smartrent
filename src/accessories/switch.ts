@@ -1,8 +1,8 @@
 import { Service, CharacteristicValue } from 'homebridge';
-import { SmartRentPlatform } from '../platform';
-import type { SmartRentAccessory } from '.';
-import { Switch, SwitchAttributes } from './../devices';
-import { WSEvent } from '../lib/client';
+import { SmartRentPlatform } from '../platform.js';
+import type { SmartRentAccessory } from './index.js';
+import { Switch, SwitchAttributes } from './../devices/index.js';
+import { WSEvent } from '../lib/client.js';
 
 /**
  * Switch Accessory
@@ -23,7 +23,7 @@ export class SwitchAccessory {
 
   constructor(
     private readonly platform: SmartRentPlatform,
-    private readonly accessory: SmartRentAccessory
+    private readonly accessory: SmartRentAccessory,
   ) {
     this.state = {
       hubId: this.accessory.context.device.room.hub_id.toString(),
@@ -39,7 +39,7 @@ export class SwitchAccessory {
       .getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(
         this.platform.Characteristic.SerialNumber,
-        this.accessory.context.device.id.toString()
+        this.accessory.context.device.id.toString(),
       );
 
     // get the Switch service if it exists, otherwise create a new Switch service
@@ -50,7 +50,7 @@ export class SwitchAccessory {
     // set the service name, this is what is displayed as the default name on the Home app
     this.service.setCharacteristic(
       this.platform.Characteristic.Name,
-      accessory.context.device.name
+      accessory.context.device.name,
     );
 
     // create handlers for required characteristics
@@ -62,7 +62,7 @@ export class SwitchAccessory {
 
     // subscribe to device state changed events
     this.platform.smartRentApi.websocket.event[this.state.deviceId] = (
-      event: WSEvent
+      event: WSEvent,
     ) => this.handleDeviceStateChanged(event);
   }
 
@@ -79,11 +79,11 @@ export class SwitchAccessory {
     switch (event.name) {
       case 'on':
         this.state.on.current = SwitchAccessory._getOnCharacteristicValue(
-          event.last_read_state === 'true'
+          event.last_read_state === 'true',
         );
         this.service.updateCharacteristic(
           this.platform.Characteristic.On,
-          this.state.on.current
+          this.state.on.current,
         );
         break;
       default:
@@ -98,7 +98,7 @@ export class SwitchAccessory {
     this.platform.log.debug('Triggered GET On');
     const switchAttributes = await this.platform.smartRentApi.getState(
       this.state.hubId,
-      this.state.deviceId
+      this.state.deviceId,
     );
     const on = switchAttributes.on as boolean;
     const currentValue = SwitchAccessory._getOnCharacteristicValue(on);

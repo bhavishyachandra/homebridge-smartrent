@@ -1,8 +1,8 @@
 import { Service, CharacteristicValue } from 'homebridge';
-import { SmartRentPlatform } from '../platform';
-import type { SmartRentAccessory } from '.';
-import { Lock, LockAttributes } from './../devices';
-import { WSEvent } from '../lib/client';
+import { SmartRentPlatform } from '../platform.js';
+import type { SmartRentAccessory } from './index.js';
+import { Lock, LockAttributes } from './../devices/index.js';
+import { WSEvent } from '../lib/client.js';
 
 /**
  * Lock Accessory
@@ -24,7 +24,7 @@ export class LockAccessory {
 
   constructor(
     private readonly platform: SmartRentPlatform,
-    private readonly accessory: SmartRentAccessory
+    private readonly accessory: SmartRentAccessory,
   ) {
     this.state = {
       hubId: this.accessory.context.device.room.hub_id.toString(),
@@ -40,7 +40,7 @@ export class LockAccessory {
       .getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(
         this.platform.Characteristic.SerialNumber,
-        this.accessory.context.device.id.toString()
+        this.accessory.context.device.id.toString(),
       );
 
     // set the battery level service for the lock accessory
@@ -59,7 +59,7 @@ export class LockAccessory {
     // set the service name, this is what is displayed as the default name on the Home app
     this.service.setCharacteristic(
       this.platform.Characteristic.Name,
-      accessory.context.device.name
+      accessory.context.device.name,
     );
 
     // create handlers for required characteristics
@@ -92,7 +92,7 @@ export class LockAccessory {
     this.platform.log.debug('Triggered GET BatteryLevel');
     const lockData = await this.platform.smartRentApi.getData(
       this.state.hubId,
-      this.state.deviceId
+      this.state.deviceId,
     );
     this.platform.log.debug('Lock Data', lockData);
     const batteryLevel = Math.round(Number(lockData.battery_level)) as number;
@@ -105,18 +105,18 @@ export class LockAccessory {
   async handleLockCurrentStateGet(): Promise<CharacteristicValue> {
     this.platform.log.debug(
       'Triggered GET LockCurrentState Start',
-      this.state.locked.current
+      this.state.locked.current,
     );
     const lockAttributes = await this.platform.smartRentApi.getState(
       this.state.hubId,
-      this.state.deviceId
+      this.state.deviceId,
     );
     const locked = lockAttributes.locked as boolean;
     const currentValue = this._getLockStateCharacteristicValue(locked);
     this.state.locked.current = currentValue;
     this.platform.log.debug(
       'Triggered GET LockCurrentState Done',
-      this.state.locked.current
+      this.state.locked.current,
     );
     return currentValue;
   }
@@ -127,11 +127,11 @@ export class LockAccessory {
   async handleLockTargetStateGet(): Promise<CharacteristicValue> {
     this.platform.log.debug(
       'Triggered GET LockTargetState',
-      this.state.locked.target
+      this.state.locked.target,
     );
     const lockAttributes = await this.platform.smartRentApi.getState(
       this.state.hubId,
-      this.state.deviceId
+      this.state.deviceId,
     );
     const locked = lockAttributes.locked as boolean;
     const currentValue = this._getLockStateCharacteristicValue(locked);
@@ -144,10 +144,11 @@ export class LockAccessory {
   async handleLockTargetStateSet(value: CharacteristicValue) {
     this.platform.log.debug('Triggered SET LockTargetState:', value);
     this.state.locked.target = value;
-    const lockAttributes = await this.platform.smartRentApi.setState<
-      Lock,
-      LockAttributes
-    >(this.state.hubId, this.state.deviceId, { locked: !!value });
+    await this.platform.smartRentApi.setState<Lock, LockAttributes>(
+      this.state.hubId,
+      this.state.deviceId,
+      { locked: !!value },
+    );
     this.platform.log.debug('Triggered SET LockTargetState:', value);
   }
 
@@ -157,19 +158,20 @@ export class LockAccessory {
   async handleLockEvent(event: WSEvent) {
     this.platform.log.debug('Recieved event on Lock: ', event);
     switch (event.name) {
-      case 'locked':
+      case 'locked': {
         const currentValue = this._getLockStateCharacteristicValue(
-          event.last_read_state === 'true'
+          event.last_read_state === 'true',
         );
         this.service.updateCharacteristic(
           this.platform.Characteristic.LockCurrentState,
-          currentValue
+          currentValue,
         );
         this.service.updateCharacteristic(
           this.platform.Characteristic.LockTargetState,
-          currentValue
+          currentValue,
         );
         break;
+      }
       case 'notifications':
         break;
     }
@@ -187,12 +189,12 @@ export class LockAccessory {
     const INTERVAL = 10000;
     this.platform.log.debug(
       'Beginning updateStateTask',
-      this.state.locked.current
+      this.state.locked.current,
     );
     try {
       const lockAttributes = await this.platform.smartRentApi.getState(
         this.state.hubId,
-        this.state.deviceId
+        this.state.deviceId,
       );
       // this.platform.log.debug('lockAttributes', lockAttributes);
       const locked = lockAttributes.locked as boolean;
@@ -214,7 +216,7 @@ export class LockAccessory {
 
     this.platform.log.debug(
       'Ending updateStateTask',
-      this.state.locked.current
+      this.state.locked.current,
     );
     setTimeout(() => {
       this.updateStateTask();

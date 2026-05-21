@@ -1,7 +1,18 @@
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosInstance } from 'axios';
-import { API_URL, API_CLIENT_HEADERS, WS_API_URL, WS_VERSION } from './request';
-import { SmartRentAuthClient } from './auth';
-import { SmartRentPlatform } from '../platform';
+import axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosInstance,
+  InternalAxiosRequestConfig,
+  AxiosHeaders,
+} from 'axios';
+import {
+  API_URL,
+  API_CLIENT_HEADERS,
+  WS_API_URL,
+  WS_VERSION,
+} from './request.js';
+import { SmartRentAuthClient } from './auth.js';
+import { SmartRentPlatform } from '../platform.js';
 import WebSocket from 'ws';
 
 export type WSDeviceList = `devices:${string}`;
@@ -33,7 +44,7 @@ export class SmartRentApiClient {
   constructor(readonly platform: SmartRentPlatform) {
     this.authClient = new SmartRentAuthClient(
       platform.api.user.storagePath(),
-      platform.log
+      platform.log,
     );
     this.apiClient = this._initializeApiClient();
   }
@@ -69,12 +80,14 @@ export class SmartRentApiClient {
    * @param config Axios request config
    * @returns Axios request config
    */
-  private async _handleRequest(config: AxiosRequestConfig) {
+  private async _handleRequest(config: InternalAxiosRequestConfig) {
     const accessToken = await this.getAccessToken();
-    config.headers = {
-      ...config.headers,
-      Authorization: `Bearer ${accessToken}`,
-    };
+    const headers =
+      config.headers instanceof AxiosHeaders
+        ? config.headers
+        : new AxiosHeaders(config.headers);
+    headers.set('Authorization', `Bearer ${accessToken}`);
+    config.headers = headers;
     this.platform.log.debug('Request:', JSON.stringify(config, null, 2));
     this.platform.log.debug('Request:');
     return config;
@@ -88,7 +101,7 @@ export class SmartRentApiClient {
   private _handleResponse(response: AxiosResponse) {
     this.platform.log.debug(
       'Response:',
-      JSON.stringify(response.data, null, 2)
+      JSON.stringify(response.data, null, 2),
     );
     return response;
   }
@@ -97,7 +110,7 @@ export class SmartRentApiClient {
 
   public async get<T, D = unknown>(
     path: string,
-    config?: AxiosRequestConfig<D>
+    config?: AxiosRequestConfig<D>,
   ) {
     const response = await this.apiClient.get<T>(path, config);
     return response.data;
@@ -106,7 +119,7 @@ export class SmartRentApiClient {
   public async post<T, D = unknown>(
     path: string,
     data?: D,
-    config?: AxiosRequestConfig<D>
+    config?: AxiosRequestConfig<D>,
   ) {
     const response = await this.apiClient.post<T>(path, data, config);
     return response.data;
@@ -115,7 +128,7 @@ export class SmartRentApiClient {
   public async patch<T, D = unknown>(
     path: string,
     data?: D,
-    config?: AxiosRequestConfig<D>
+    config?: AxiosRequestConfig<D>,
   ) {
     const response = await this.apiClient.patch<T>(path, data, config);
     return response.data;
@@ -124,8 +137,8 @@ export class SmartRentApiClient {
 
 export class SmartRentWebsocketClient extends SmartRentApiClient {
   public wsClient: Promise<WebSocket>;
-  public event: Object;
-  private devices: Number[];
+  public event: object;
+  private devices: number[];
 
   constructor(readonly platform: SmartRentPlatform) {
     super(platform);
@@ -135,13 +148,13 @@ export class SmartRentWebsocketClient extends SmartRentApiClient {
   }
 
   private _emitize(obj: object, eventName: string) {
-    let _subscriptions = new Set<Function>();
+    let _subscriptions = new Set<(...args: unknown[]) => void>();
     Object.defineProperty(obj, eventName, {
       set(func) {
         _subscriptions.add(func);
       },
       get() {
-        var emit = (...args: any[]) => {
+        const emit = (...args: unknown[]) => {
           _subscriptions.forEach(f => f(...args));
         };
 
@@ -169,7 +182,7 @@ export class SmartRentWebsocketClient extends SmartRentApiClient {
     const wsClient = new WebSocket(
       WS_API_URL +
         '?' +
-        new URLSearchParams({ token, vsn: WS_VERSION }).toString()
+        new URLSearchParams({ token, vsn: WS_VERSION }).toString(),
     );
     wsClient.onopen = this._handleWsOpen.bind(this);
     wsClient.onmessage = this._handleWsMessage.bind(this);
@@ -185,9 +198,9 @@ export class SmartRentWebsocketClient extends SmartRentApiClient {
 
   private _handleWsMessage(message: WebSocket.MessageEvent) {
     this.platform.log.debug(
-      `WebSocket message received: Data: ${message.data}`
+      `WebSocket message received: Data: ${message.data}`,
     );
-    let data: WSPayload = JSON.parse(String(message.data));
+    const data: WSPayload = JSON.parse(String(message.data));
     if (data[3].includes('attribute_state')) {
       const device = data[2].split(':')[1];
       this.platform.log.debug(String(data[4]));
@@ -201,7 +214,7 @@ export class SmartRentWebsocketClient extends SmartRentApiClient {
 
   private _handleWsClose(event: WebSocket.CloseEvent) {
     this.platform.log.debug(
-      `WebSocket connection closed: Code: ${event.code}, Reason: ${event.reason}`
+      `WebSocket connection closed: Code: ${event.code}, Reason: ${event.reason}`,
     );
     this.wsClient = this._initializeWsClient();
   }
@@ -210,15 +223,16 @@ export class SmartRentWebsocketClient extends SmartRentApiClient {
    * Adds device to websocket client subsciption list and announces events to device handlers
    * @param deviceId Device ID
    */
-  public async subscribeDevice(deviceId: Number) {
+  public async subscribeDevice(deviceId: number) {
     this.platform.log.debug(`Subscribing to device: ${deviceId}`);
     if (!this.devices.includes(deviceId)) {
       this.devices.push(deviceId);
       this._emitize(this.event, `${deviceId}`);
     }
     try {
-      if ((await this.wsClient).readyState !== WebSocket.OPEN)
+      if ((await this.wsClient).readyState !== WebSocket.OPEN) {
         throw 'WebSocket not ready';
+      }
       (await this.wsClient).send(
         JSON.stringify(<WSPayload>[
           null,
@@ -226,7 +240,7 @@ export class SmartRentWebsocketClient extends SmartRentApiClient {
           `devices:${deviceId}`,
           'phx_join',
           {},
-        ])
+        ]),
       );
       this.platform.log.debug(`Subscribed to device: ${deviceId}`);
     } catch (err) {

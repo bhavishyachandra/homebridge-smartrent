@@ -1,13 +1,11 @@
-import { SmartRentPlatform } from '../platform';
-import { SmartRentApiClient, SmartRentWebsocketClient } from './client';
+import { SmartRentPlatform } from '../platform.js';
+import { SmartRentApiClient, SmartRentWebsocketClient } from './client.js';
 import {
   BaseDeviceResponse,
   BaseDeviceDataResponse,
   BaseDeviceAttributes,
   DeviceDataUnion,
-  DeviceData,
-  Device,
-} from '../devices';
+} from '../devices/index.js';
 
 type UnitData = {
   building: string;
@@ -79,6 +77,7 @@ type RoomRecordsData = {
   devices: DeviceDataUnion[];
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type RoomRecords = {
   data: RoomRecordsData[];
 };
@@ -118,10 +117,10 @@ export class SmartRentApi {
 
     // Get the devices in the hub
     const devices = await this.client.get<DeviceRecords>(
-      `/hubs/${hubId}/devices`
+      `/hubs/${hubId}/devices`,
     );
     const devicesData = devices.data;
-    this.platform.log.info(`Devices Found: `, devicesData);
+    this.platform.log.info('Devices Found: ', devicesData);
 
     if (devicesData.length) {
       this.platform.log.info(`Found ${devicesData.length} devices`);
@@ -141,10 +140,10 @@ export class SmartRentApi {
 
   public async getState<Device extends BaseDeviceResponse>(
     hubId: string,
-    deviceId: string
+    deviceId: string,
   ) {
     const device = await this.client.get<Device>(
-      `/hubs/${hubId}/devices/${deviceId}`
+      `/hubs/${hubId}/devices/${deviceId}`,
     );
     // this.platform.log.debug("device: ", device)
     return device.data.attributes;
@@ -152,10 +151,10 @@ export class SmartRentApi {
 
   public async getData<Device extends BaseDeviceDataResponse>(
     hubId: string,
-    deviceId: string
+    deviceId: string,
   ) {
     const device = await this.client.get<Device>(
-      `/hubs/${hubId}/devices/${deviceId}`
+      `/hubs/${hubId}/devices/${deviceId}`,
     );
     this.platform.log.debug('getData: ', device);
     return device.data;
@@ -163,11 +162,11 @@ export class SmartRentApi {
 
   public async setState<
     Device extends BaseDeviceResponse,
-    A extends BaseDeviceAttributes
+    A extends BaseDeviceAttributes,
   >(hubId: string, deviceId: string, attributes: Partial<A>) {
     const device = await this.client.patch<Device>(
       `/hubs/${hubId}/devices/${deviceId}`,
-      { attributes }
+      { attributes },
     );
     return device.data.attributes;
   }

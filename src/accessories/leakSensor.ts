@@ -1,7 +1,7 @@
 import { Service, CharacteristicValue } from 'homebridge';
-import { SmartRentPlatform } from '../platform';
-import type { SmartRentAccessory } from '.';
-import { WSEvent } from '../lib/client';
+import { SmartRentPlatform } from '../platform.js';
+import type { SmartRentAccessory } from './index.js';
+import { WSEvent } from '../lib/client.js';
 
 /**
  * Leak Sensor Accessory
@@ -21,7 +21,7 @@ export class LeakSensorAccessory {
 
   constructor(
     private readonly platform: SmartRentPlatform,
-    private readonly accessory: SmartRentAccessory
+    private readonly accessory: SmartRentAccessory,
   ) {
     this.state = {
       hubId: this.accessory.context.device.room.hub_id.toString(),
@@ -36,7 +36,7 @@ export class LeakSensorAccessory {
       .getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(
         this.platform.Characteristic.SerialNumber,
-        this.accessory.context.device.id.toString()
+        this.accessory.context.device.id.toString(),
       );
 
     // get the LeakDetected service if it exists, otherwise create a new LeakSensor service
@@ -47,7 +47,7 @@ export class LeakSensorAccessory {
     // set the service name, this is what is displayed as the default name on the Home app
     this.service.setCharacteristic(
       this.platform.Characteristic.Name,
-      accessory.context.device.name
+      accessory.context.device.name,
     );
 
     // create handlers for required characteristics
@@ -58,7 +58,7 @@ export class LeakSensorAccessory {
 
     // subscribe to device events
     this.platform.smartRentApi.websocket.event[this.state.deviceId] = (
-      event: WSEvent
+      event: WSEvent,
     ) => this.handleDeviceStateChanged(event);
   }
 
@@ -76,7 +76,7 @@ export class LeakSensorAccessory {
     this.platform.log.debug('Triggered GET LeakDetected');
     const leakAttributes = await this.platform.smartRentApi.getState(
       this.state.hubId,
-      this.state.deviceId
+      this.state.deviceId,
     );
     const leak = leakAttributes.leak as boolean;
     const currentValue = this._getLeakDetectedCharacteristicValue(leak);
@@ -91,16 +91,17 @@ export class LeakSensorAccessory {
   handleDeviceStateChanged(event: WSEvent) {
     this.platform.log.debug('Received websocket leak event:', event);
     switch (event.name) {
-      case 'leak':
+      case 'leak': {
         const leak = this._getLeakDetectedCharacteristicValue(
-          event.last_read_state === 'true'
+          event.last_read_state === 'true',
         );
         this.state.leak.current = leak;
         this.service.updateCharacteristic(
           this.platform.Characteristic.LeakDetected,
-          leak
+          leak,
         );
         break;
+      }
     }
   }
 }

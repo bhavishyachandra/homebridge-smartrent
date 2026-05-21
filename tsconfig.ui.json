@@ -2,20 +2,18 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["DOM", "ES2022"],
-    "rootDir": "src",
+    "rootDir": "homebridge-ui",
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "strict": true,
-    "declaration": true,
-    "declarationMap": true,
     "skipLibCheck": true,
-    "outDir": "dist",
+    "outDir": "homebridge-ui",
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["**/*.spec.ts"]
+  "include": ["homebridge-ui/server.ts"],
+  "exclude": ["homebridge-ui/public/**"]
 }

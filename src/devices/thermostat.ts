@@ -1,4 +1,4 @@
-import { DeviceData, Device } from './base';
+import { DeviceData, Device } from './base.js';
 
 export type ThermostatFanMode = 'auto' | 'on';
 export type ThermostatMode = 'off' | 'cool' | 'heat' | 'auto';

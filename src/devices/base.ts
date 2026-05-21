@@ -10,7 +10,7 @@ export type BaseDeviceAttributes = Record<
 export type DeviceData<
   A extends BaseDeviceAttributes, // Attributes
   T extends string, // Device type
-  B extends boolean // Battery powered
+  B extends boolean, // Battery powered
 > = BatteryData<B> & {
   attributes: A;
   icon: string | null;
@@ -37,7 +37,7 @@ export type DeviceData<
 
 export interface Device<
   D extends DeviceData<A, string, boolean>,
-  A extends BaseDeviceAttributes
+  A extends BaseDeviceAttributes,
 > {
   data: D;
 }

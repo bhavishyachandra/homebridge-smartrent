@@ -1,4 +1,4 @@
-import { DeviceData, Device } from './base';
+import { DeviceData, Device } from './base.js';
 
 export type SwitchMultilevelAttributes = { level: number };
 

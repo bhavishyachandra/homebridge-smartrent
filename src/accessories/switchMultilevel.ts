@@ -1,8 +1,11 @@
 import { Service, CharacteristicValue } from 'homebridge';
-import { SmartRentPlatform } from '../platform';
-import type { SmartRentAccessory } from '.';
-import { SwitchMultilevel, SwitchMultilevelAttributes } from '../devices';
-import { WSEvent } from '../lib/client';
+import { SmartRentPlatform } from '../platform.js';
+import type { SmartRentAccessory } from './index.js';
+import {
+  SwitchMultilevel,
+  SwitchMultilevelAttributes,
+} from '../devices/index.js';
+import { WSEvent } from '../lib/client.js';
 
 /**
  * Switch Muiltilevel Accessory
@@ -27,7 +30,7 @@ export class SwitchMultilevelAccessory {
 
   constructor(
     private readonly platform: SmartRentPlatform,
-    private readonly accessory: SmartRentAccessory
+    private readonly accessory: SmartRentAccessory,
   ) {
     this.state = {
       hubId: this.accessory.context.device.room.hub_id.toString(),
@@ -47,7 +50,7 @@ export class SwitchMultilevelAccessory {
       .getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(
         this.platform.Characteristic.SerialNumber,
-        this.accessory.context.device.id.toString()
+        this.accessory.context.device.id.toString(),
       );
 
     // get the Switch Multilevel service if it exists, otherwise create a new Switch Multilevel service
@@ -58,7 +61,7 @@ export class SwitchMultilevelAccessory {
     // set the service name, this is what is displayed as the default name on the Home app
     this.service.setCharacteristic(
       this.platform.Characteristic.Name,
-      accessory.context.device.name
+      accessory.context.device.name,
     );
 
     // create handlers for required characteristics
@@ -75,7 +78,7 @@ export class SwitchMultilevelAccessory {
 
     // subscribe to device state changed events
     this.platform.smartRentApi.websocket.event[this.state.deviceId] = (
-      event: WSEvent
+      event: WSEvent,
     ) => this.handleDeviceStateChanged(event);
   }
 
@@ -85,7 +88,7 @@ export class SwitchMultilevelAccessory {
   async handleDeviceStateChanged(event: WSEvent) {
     this.platform.log.debug(
       'Received websocket Switch Multilevel event:',
-      event
+      event,
     );
     switch (event.name) {
       case 'on':
@@ -94,7 +97,7 @@ export class SwitchMultilevelAccessory {
 
         this.service.updateCharacteristic(
           this.platform.Characteristic.On,
-          this.state.on.current
+          this.state.on.current,
         );
         break;
       default:
@@ -110,7 +113,7 @@ export class SwitchMultilevelAccessory {
     const switchMultilevelAttributes =
       await this.platform.smartRentApi.getState(
         this.state.hubId,
-        this.state.deviceId
+        this.state.deviceId,
       );
     const level = Number(switchMultilevelAttributes.level) > 0 ? 1 : 0;
     this.state.on.current = level;
@@ -142,7 +145,7 @@ export class SwitchMultilevelAccessory {
     const switchMultilevelAttributes =
       await this.platform.smartRentApi.getState(
         this.state.hubId,
-        this.state.deviceId
+        this.state.deviceId,
       );
     const level = switchMultilevelAttributes.level as number;
     this.state.on.current = level;

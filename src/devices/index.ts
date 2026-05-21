@@ -1,15 +1,15 @@
-import { LeakSensorData } from './leakSensor';
-import { LockData } from './lock';
-import { SwitchData } from './switch';
-import { SwitchMultilevelData } from './switchMultilevel';
-import { ThermostatData } from './thermostat';
+import { LeakSensorData } from './leakSensor.js';
+import { LockData } from './lock.js';
+import { SwitchData } from './switch.js';
+import { SwitchMultilevelData } from './switchMultilevel.js';
+import { ThermostatData } from './thermostat.js';
 
-export * from './base';
-export * from './leakSensor';
-export * from './lock';
-export * from './switch';
-export * from './thermostat';
-export * from './switchMultilevel';
+export * from './base.js';
+export * from './leakSensor.js';
+export * from './lock.js';
+export * from './switch.js';
+export * from './thermostat.js';
+export * from './switchMultilevel.js';
 
 export type DeviceDataUnion =
   | LeakSensorData
