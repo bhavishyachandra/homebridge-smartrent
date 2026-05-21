@@ -4,7 +4,7 @@ import {
   RequestError,
 } from '@homebridge/plugin-ui-utils';
 import fs from 'node:fs';
-import { SmartRentAuthClient } from '../dist/lib/auth.js';
+import { SmartRentAuthClient } from '../lib/auth.js';
 
 interface LoginPayload {
   email?: string;

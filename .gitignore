@@ -1,7 +1,5 @@
 # Ignore compiled code
 dist
-homebridge-ui/server.js
-homebridge-ui/server.js.map
 
 # ------------- Defaults ------------- #
 

@@ -3,6 +3,7 @@
   "pluginType": "platform",
   "singular": true,
   "customUi": true,
+  "customUiPath": "dist/ui",
   "headerDisplay": "Homebridge plugin for SmartRent installations",
   "footerDisplay": "For documentation please see [GitHub](https://github.com/bhavishyachandra/homebridge-smartrent)",
   "schema": {
