@@ -132,6 +132,18 @@ npm run watch
 
 This will launch an instance of Homebridge in debug mode which will restart every time you make a change to the source code. It will load the config stored in the default location under `~/.homebridge`. You may need to stop other running instances of Homebridge while using this command to prevent conflicts. You can adjust the Homebridge startup command in the [`nodemon.json`](./nodemon.json) file.
 
+### Release Publishing (Maintainers)
+
+This repository publishes to npm using GitHub Actions OIDC Trusted Publishing (no npm token).
+
+Configure npm Trusted Publisher for package `@bhavishyachandra/homebridge-smartrent` with:
+
+- Provider: GitHub Actions
+- Repository owner: `bhavishyachandra`
+- Repository name: `homebridge-smartrent`
+- Workflow filename: `release.yml`
+- Environment name: _(leave empty unless you add a GitHub Actions environment to release job)_
+
 # ⚖️ Legal
 
 ## License
