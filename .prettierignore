@@ -2,5 +2,3 @@ node_modules
 dist
 package-lock.json
 CHANGELOG.md
-homebridge-ui/server.js
-homebridge-ui/server.js.map
