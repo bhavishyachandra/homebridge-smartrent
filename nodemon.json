@@ -1,6 +1,6 @@
 {
-  "watch": ["src", "homebridge-ui/public"],
-  "ext": "ts",
+  "watch": ["src"],
+  "ext": "ts,html,css,png,svg",
   "ignore": [],
   "exec": "npm run build && homebridge -I -D",
   "signal": "SIGTERM",
