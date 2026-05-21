@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.4](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.4.3...v1.4.4) (2026-05-21)
+
+
+### Bug Fixes
+
+* **ci:** force file-path interpretation when publishing tarball ([#81](https://github.com/bhavishyachandra/homebridge-smartrent/issues/81)) ([d17eb3b](https://github.com/bhavishyachandra/homebridge-smartrent/commit/d17eb3b58c7edf89c1edc0dc90cd1921649f68ce))
+
 ## [1.4.3](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.4.2...v1.4.3) (2026-05-21)
 
 
