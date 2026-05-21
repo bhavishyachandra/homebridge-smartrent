@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.3](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.4.2...v1.4.3) (2026-05-21)
+
+
+### Bug Fixes
+
+* **ci:** publish to npm via OIDC instead of NPM_TOKEN ([#79](https://github.com/bhavishyachandra/homebridge-smartrent/issues/79)) ([a2ccd06](https://github.com/bhavishyachandra/homebridge-smartrent/commit/a2ccd06b693ae6df719814613eadc4fa9749aee8))
+* use web app fingerprint for SmartRent API requests ([#74](https://github.com/bhavishyachandra/homebridge-smartrent/issues/74)) ([3cde8c6](https://github.com/bhavishyachandra/homebridge-smartrent/commit/3cde8c6fd8738b9343a2fdd68163d5d20becb537))
+
 ## [1.4.2](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.4.1...v1.4.2) (2023-09-06)
 
 
