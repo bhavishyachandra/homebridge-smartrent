@@ -70,7 +70,7 @@ export class SmartRentAuthClient {
     this.storagePath = storagePath;
     this.pluginPath = pathResolve(this.storagePath, 'smartrent');
     this.sessionPath = pathResolve(this.pluginPath, 'session.json');
-    this.log = log ?? console;
+    this.log = log ?? (console as unknown as Logger);
     this.client = this._initializeClient();
   }
 
