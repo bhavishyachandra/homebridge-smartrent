@@ -24,5 +24,6 @@ export const API_CLIENT_HEADERS = {
   ...COMMON_HEADERS,
   Accept: 'application/json',
   'Content-Type': 'application/json',
-  'X-AppVersion': `ios-resapp-${APP_VERSION}`,
+  // SmartRent now rejects the legacy mobile app fingerprint from non-mobile clients.
+  'X-AppVersion': `homebridge-resweb-${APP_VERSION}`,
 };
