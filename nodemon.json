@@ -2,7 +2,7 @@
   "watch": ["src"],
   "ext": "ts,html,css,png,svg",
   "ignore": [],
-  "exec": "npm run build && homebridge -I -D",
+  "exec": "npm run build && homebridge -U ./test/hbConfig -D",
   "signal": "SIGTERM",
   "env": {
     "NODE_OPTIONS": "--trace-warnings"

@@ -21,6 +21,10 @@
     "type": "git",
     "url": "git+https://github.com/bhavishyachandra/homebridge-smartrent.git"
   },
+  "homepage": "https://github.com/bhavishyachandra/homebridge-smartrent#readme",
+  "bugs": {
+    "url": "https://github.com/bhavishyachandra/homebridge-smartrent/issues"
+  },
   "engines": {
     "node": "^22.10.0 || ^24.0.0",
     "homebridge": "^1.8.0 || ^2.0.0"
@@ -49,7 +53,7 @@
     "prepublishOnly": "npm-run-all prettier lint build",
     "semantic-release": "cross-env HUSKY=0 semantic-release",
     "release": "npm-run-all build semantic-release",
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "npm-run-all prettier lint typecheck"
   },
   "dependencies": {
     "@homebridge/plugin-ui-utils": "^2.2.3",
