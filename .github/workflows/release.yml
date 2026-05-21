@@ -33,7 +33,12 @@ jobs:
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
       - name: Release
+        id: semantic-release
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          NPM_CONFIG_PROVENANCE: 'true'
         run: npm run semantic-release
+      - name: Publish to npm (trusted publishing via OIDC)
+        if: hashFiles('dist/*.tgz') != ''
+        env:
+          NPM_CONFIG_PROVENANCE: 'true'
+        run: npm publish dist/*.tgz --access public --provenance
