@@ -41,4 +41,17 @@ jobs:
         if: hashFiles('dist/*.tgz') != ''
         env:
           NPM_CONFIG_PROVENANCE: 'true'
-        run: npm publish dist/*.tgz --access public --provenance
+        # Use an explicit ./ prefix on every tarball: `npm publish dist/foo.tgz`
+        # is parsed by npm as a GitHub `owner/repo` shorthand and triggers a
+        # `git ls-remote` against github.com, not a tarball publish.
+        run: |
+          shopt -s nullglob
+          tarballs=(dist/*.tgz)
+          if [ ${#tarballs[@]} -eq 0 ]; then
+            echo "No tarball found in dist/, nothing to publish."
+            exit 0
+          fi
+          for t in "${tarballs[@]}"; do
+            echo "Publishing ./$t"
+            npm publish "./$t" --access public --provenance
+          done
