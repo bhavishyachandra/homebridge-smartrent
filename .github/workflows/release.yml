@@ -15,7 +15,6 @@ jobs:
       contents: write # to be able to publish a GitHub release
       issues: write # to be able to comment on released issues
       pull-requests: write # to be able to comment on released pull requests
-      id-token: write # to enable use of OIDC for npm provenance
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -25,33 +24,11 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
-          registry-url: 'https://registry.npmjs.org'
-      - name: Upgrade npm for trusted publishing (OIDC requires npm >= 11.5.1)
-        run: npm install -g npm@latest
       - name: Install dependencies
         run: npm clean-install
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
       - name: Release
-        id: semantic-release
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: npm run semantic-release
-      - name: Publish to npm (trusted publishing via OIDC)
-        if: hashFiles('dist/*.tgz') != ''
-        env:
-          NPM_CONFIG_PROVENANCE: 'true'
-        # Use an explicit ./ prefix on every tarball: `npm publish dist/foo.tgz`
-        # is parsed by npm as a GitHub `owner/repo` shorthand and triggers a
-        # `git ls-remote` against github.com, not a tarball publish.
-        run: |
-          shopt -s nullglob
-          tarballs=(dist/*.tgz)
-          if [ ${#tarballs[@]} -eq 0 ]; then
-            echo "No tarball found in dist/, nothing to publish."
-            exit 0
-          fi
-          for t in "${tarballs[@]}"; do
-            echo "Publishing ./$t"
-            npm publish "./$t" --access public --provenance
-          done
