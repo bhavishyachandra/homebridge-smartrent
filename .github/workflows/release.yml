@@ -35,5 +35,18 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          NPM_CONFIG_PROVENANCE: 'true'
         run: npm run semantic-release
+      - name: Publish to npm with trusted publishing (OIDC)
+        env:
+          NPM_CONFIG_PROVENANCE: 'true'
+        run: |
+          shopt -s nullglob
+          tarballs=(dist/*.tgz)
+          if [ ${#tarballs[@]} -eq 0 ]; then
+            echo "No tarball produced by semantic-release; skipping npm publish."
+            exit 0
+          fi
+          for tarball in "${tarballs[@]}"; do
+            echo "Publishing $tarball"
+            npm publish "$tarball" --access public --provenance
+          done
