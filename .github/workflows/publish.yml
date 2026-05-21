@@ -21,10 +21,14 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout master at the commit produced by the Release workflow
+      - name: Checkout master (now contains the version-bump commit semantic-release pushed)
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          # We intentionally do NOT use github.event.workflow_run.head_sha:
+          # that's the commit that *triggered* the Release run, i.e. the one
+          # before semantic-release pushed its version bump back to master.
+          # We want the new tip of master, which has the bumped package.json.
+          ref: master
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -32,8 +36,11 @@ jobs:
           node-version: 'lts/*'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Upgrade npm for trusted publishing (OIDC requires npm >= 11.5.1)
-        run: npm install -g npm@latest
+      - name: Ensure npm supports trusted publishing (>= 11.5.1)
+        # Pinned to a known-good minimum to keep the publish reproducible;
+        # avoids surprise breakage when a future npm major raises its Node
+        # engine requirement above what `node-version: lts/*` provides.
+        run: npm install -g npm@^11.5.1
 
       - name: Check whether this version is already on npm
         id: check
