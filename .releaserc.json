@@ -30,7 +30,7 @@
     [
       "@semantic-release/npm",
       {
-        "tarballDir": "dist"
+        "npmPublish": false
       }
     ],
     ["@semantic-release/github"],
