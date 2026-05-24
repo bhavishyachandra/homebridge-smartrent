@@ -19,6 +19,7 @@ export type WSEvent = {
     | 'level'
     | 'motion_binary'
     | 'on'
+    | 'operating_state'
     | 'notifications';
   remote_id: string;
   type: string;
