@@ -136,13 +136,14 @@ export class SwitchMultilevelAccessory {
    */
   async handleOnSet(value: CharacteristicValue) {
     this.platform.log.debug('Triggered SET On:', value);
-    this.state.on.target = value === true ? 1 : 0;
+    const on = Boolean(value);
+    this.state.on.target = on ? 1 : 0;
     const switchMultilevelAttributes =
       await this.platform.smartRentApi.setState<
         SwitchMultilevel,
         SwitchMultilevelAttributes
       >(this.state.hubId, this.state.deviceId, {
-        level: value === true ? 100 : 0,
+        level: on ? 100 : 0,
       });
     const brightness = Number(switchMultilevelAttributes.level);
     this.state.on.current = brightness > 0 ? 1 : 0;
