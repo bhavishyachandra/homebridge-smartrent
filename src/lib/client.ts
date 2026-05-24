@@ -16,6 +16,8 @@ export type WSEvent = {
     | 'cooling_setpoint'
     | 'mode'
     | 'locked'
+    | 'level'
+    | 'motion_binary'
     | 'on'
     | 'notifications';
   remote_id: string;

@@ -63,7 +63,7 @@ export class SmartRentAuthClient {
   private storagePath = '~/.homebridge';
   private pluginPath = '~/.homebridge/smartrent';
   private sessionPath = '~/.homebridge/smartrent/session.json';
-  private readonly log: Logger;
+  private readonly log: Logger | Console;
   private readonly client: AxiosInstance;
 
   constructor(storagePath: string, log?: Logger) {
@@ -139,9 +139,28 @@ export class SmartRentAuthClient {
    */
   private async _readStoredSession() {
     if (existsSync(this.sessionPath)) {
-      const sessionString = await fsPromises.readFile(this.sessionPath, 'utf8');
-      const session = JSON.parse(sessionString) as Session;
-      this.session = session;
+      try {
+        const sessionString = await fsPromises.readFile(
+          this.sessionPath,
+          'utf8'
+        );
+        const session = JSON.parse(sessionString) as Session;
+        this.session = session;
+      } catch (error) {
+        this.log.warn(
+          'Failed to read saved SmartRent session; removing it and starting a new session',
+          error
+        );
+        try {
+          await fsPromises.unlink(this.sessionPath);
+        } catch (unlinkError) {
+          this.log.warn(
+            'Failed to remove saved SmartRent session',
+            unlinkError
+          );
+        }
+        this.session = undefined;
+      }
     } else if (!existsSync(this.pluginPath)) {
       await fsPromises.mkdir(this.pluginPath);
     }

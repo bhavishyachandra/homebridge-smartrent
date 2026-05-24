@@ -3,6 +3,7 @@ import { DeviceDataUnion } from '../devices';
 
 export * from './leakSensor';
 export * from './lock';
+export * from './motionSensor';
 export * from './switch';
 export * from './thermostat';
 export * from './switchMultilevel';
