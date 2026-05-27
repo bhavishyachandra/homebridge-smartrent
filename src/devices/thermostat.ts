@@ -2,6 +2,12 @@ import { DeviceData, Device } from './base';
 
 export type ThermostatFanMode = 'auto' | 'on';
 export type ThermostatMode = 'off' | 'cool' | 'heat' | 'auto';
+export type ThermostatOperatingState =
+  | 'cooling'
+  | 'fan_only'
+  | 'heating'
+  | 'idle'
+  | 'off';
 
 export type ThermostatAttributes = {
   cool_target_temp: number;
@@ -10,6 +16,7 @@ export type ThermostatAttributes = {
   fan_mode: ThermostatFanMode;
   heat_target_temp: number;
   mode: ThermostatMode;
+  operating_state?: ThermostatOperatingState;
 };
 
 export type ThermostatData = DeviceData<
