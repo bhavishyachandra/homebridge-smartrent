@@ -3,6 +3,7 @@ import axios, { AxiosResponse, AxiosInstance, AxiosError } from 'axios';
 import { existsSync, promises as fsPromises } from 'fs';
 import { URLSearchParams } from 'url';
 import { resolve as pathResolve } from 'path';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
 import { SmartRentPlatformConfig } from './config';
 import { API_URL, AUTH_CLIENT_HEADERS } from './request';
 
@@ -84,8 +85,25 @@ export class SmartRentAuthClient {
   ): sessionData is TfaSessionData =>
     !!sessionData && 'tfa_api_token' in sessionData;
 
-  private static _getExpireDate(milliseconds: number) {
-    return new Date(1000 * milliseconds - 100);
+  private static _getExpireDate(epochSeconds: number) {
+    // refresh 60 seconds before actual expiration to avoid races
+    return new Date(1000 * (epochSeconds - 60));
+  }
+
+  /**
+   * Compute expiration from a JWT's `exp` claim. Falls back to the supplied
+   * server-provided value if the token cannot be decoded.
+   */
+  private static _expiryFromJwt(token: string, fallbackEpochSeconds: number) {
+    try {
+      const { exp } = jwtDecode<JwtPayload>(token);
+      if (typeof exp === 'number') {
+        return SmartRentAuthClient._getExpireDate(exp);
+      }
+    } catch {
+      // ignore – use fallback
+    }
+    return SmartRentAuthClient._getExpireDate(fallbackEpochSeconds);
   }
 
   /**
@@ -134,14 +152,29 @@ export class SmartRentAuthClient {
   }
 
   /**
-   * Read the session from session.json and store in this.session
-   * @returns Session data
+   * Read the session from session.json and store in this.session.
+   * If the file is unreadable or malformed, delete it and force re-auth.
    */
   private async _readStoredSession() {
     if (existsSync(this.sessionPath)) {
-      const sessionString = await fsPromises.readFile(this.sessionPath, 'utf8');
-      const session = JSON.parse(sessionString) as Session;
-      this.session = session;
+      try {
+        const sessionString = await fsPromises.readFile(
+          this.sessionPath,
+          'utf8'
+        );
+        this.session = JSON.parse(sessionString) as Session;
+      } catch (err) {
+        this.log.warn(
+          'Stored SmartRent session is unreadable or corrupt; deleting and re-authenticating.',
+          err
+        );
+        try {
+          await fsPromises.rm(this.sessionPath, { force: true });
+        } catch (rmErr) {
+          this.log.debug('Failed to remove corrupt session file', rmErr);
+        }
+        this.session = undefined;
+      }
     } else if (!existsSync(this.pluginPath)) {
       await fsPromises.mkdir(this.pluginPath);
     }
@@ -158,7 +191,10 @@ export class SmartRentAuthClient {
       userId: data.user_id,
       accessToken: data.access_token,
       refreshToken: data.refresh_token,
-      expires: SmartRentAuthClient._getExpireDate(data.expires),
+      expires: SmartRentAuthClient._expiryFromJwt(
+        data.access_token,
+        data.expires
+      ),
     };
     this.session = session;
     this.log.info(`${refreshed ? 'Refreshed' : 'Started'} SmartRent session`);

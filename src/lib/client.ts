@@ -1,4 +1,10 @@
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosInstance } from 'axios';
+import axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosInstance,
+  InternalAxiosRequestConfig,
+  AxiosHeaders,
+} from 'axios';
 import { API_URL, API_CLIENT_HEADERS, WS_API_URL, WS_VERSION } from './request';
 import { SmartRentAuthClient } from './auth';
 import { SmartRentPlatform } from '../platform';
@@ -72,12 +78,14 @@ export class SmartRentApiClient {
    * @param config Axios request config
    * @returns Axios request config
    */
-  private async _handleRequest(config: AxiosRequestConfig) {
+  private async _handleRequest(config: InternalAxiosRequestConfig) {
     const accessToken = await this.getAccessToken();
-    config.headers = {
-      ...config.headers,
-      Authorization: `Bearer ${accessToken}`,
-    };
+    const headers =
+      config.headers instanceof AxiosHeaders
+        ? config.headers
+        : new AxiosHeaders(config.headers);
+    headers.set('Authorization', `Bearer ${accessToken}`);
+    config.headers = headers;
     this.platform.log.debug('Request:', JSON.stringify(config, null, 2));
     this.platform.log.debug('Request:');
     return config;
