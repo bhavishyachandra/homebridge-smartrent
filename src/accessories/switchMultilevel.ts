@@ -148,6 +148,14 @@ export class SwitchMultilevelAccessory {
     const brightness = Number(switchMultilevelAttributes.level);
     this.state.on.current = brightness > 0 ? 1 : 0;
     this.state.brightness.current = brightness;
+    this.service.updateCharacteristic(
+      this.platform.Characteristic.Brightness,
+      this.state.brightness.current
+    );
+    this.service.updateCharacteristic(
+      this.platform.Characteristic.On,
+      this.state.on.current
+    );
   }
 
   /**
