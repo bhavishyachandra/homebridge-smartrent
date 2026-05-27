@@ -9,6 +9,6 @@ import { SmartRentPlatform } from './platform.js';
 export default (api: API) => {
   api.registerPlatform(
     PLATFORM_NAME,
-    SmartRentPlatform as unknown as PlatformPluginConstructor,
+    SmartRentPlatform as unknown as PlatformPluginConstructor
   );
 };

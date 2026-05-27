@@ -75,12 +75,12 @@ export class SmartRentAuthClient {
   }
 
   private static _isOauthSession = (
-    sessionData?: object,
+    sessionData?: object
   ): sessionData is OAuthSessionData =>
     !!sessionData && 'access_token' in sessionData;
 
   private static _isTfaSession = (
-    sessionData?: object,
+    sessionData?: object
   ): sessionData is TfaSessionData =>
     !!sessionData && 'tfa_api_token' in sessionData;
 
@@ -127,7 +127,7 @@ export class SmartRentAuthClient {
           ...AUTH_CLIENT_HEADERS,
           'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
         },
-      },
+      }
     );
     const authData = response.data.data;
     return authData;
@@ -229,7 +229,7 @@ export class SmartRentAuthClient {
       this._handleResponseError(
         error,
         'Invalid email or password',
-        'create session',
+        'create session'
       );
     }
   }
@@ -250,7 +250,7 @@ export class SmartRentAuthClient {
       this._handleResponseError(
         error,
         'Invalid 2FA code',
-        'create 2FA session',
+        'create 2FA session'
       );
     }
   }
@@ -274,7 +274,7 @@ export class SmartRentAuthClient {
             ...AUTH_CLIENT_HEADERS,
             'Authorization-X-Refresh': refreshToken,
           },
-        },
+        }
       );
       const sessionData = response.data.data;
       return this._storeSession(sessionData, true);
@@ -282,7 +282,7 @@ export class SmartRentAuthClient {
       this._handleResponseError(
         error,
         'Refresh token expired',
-        'refresh session',
+        'refresh session'
       );
     }
   }
@@ -290,7 +290,7 @@ export class SmartRentAuthClient {
   private _handleResponseError(
     error: unknown,
     authMsg: string,
-    action: string,
+    action: string
   ) {
     const axiosError = error as AxiosError;
     if (axiosError.response) {

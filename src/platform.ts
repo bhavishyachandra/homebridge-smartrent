@@ -33,7 +33,7 @@ export class SmartRentPlatform implements DynamicPlatformPlugin {
   constructor(
     public readonly log: Logger,
     public readonly config: SmartRentPlatformConfig,
-    public readonly api: API,
+    public readonly api: API
   ) {
     this.Service = this.api.hap.Service;
     this.Characteristic = this.api.hap.Characteristic;
@@ -59,7 +59,7 @@ export class SmartRentPlatform implements DynamicPlatformPlugin {
   private _initAccessory(
     uuid: string,
     device: DeviceDataUnion,
-    accessory?: SmartRentAccessory,
+    accessory?: SmartRentAccessory
   ) {
     // create the accessory handler for the restored accessory
     // this is imported from `platformAccessory.ts`
@@ -92,7 +92,7 @@ export class SmartRentPlatform implements DynamicPlatformPlugin {
         break;
       default:
         this.log.error(
-          `Unknown device type: ${(device as DeviceDataUnion).type}`,
+          `Unknown device type: ${(device as DeviceDataUnion).type}`
         );
         return;
     }
@@ -103,7 +103,7 @@ export class SmartRentPlatform implements DynamicPlatformPlugin {
       // the accessory already exists
       this.log.info(
         'Restoring existing accessory from cache:',
-        accessory.displayName,
+        accessory.displayName
       );
       // if you need to update the accessory.context then you should run `api.updatePlatformAccessories`. eg.:
       accessory.context.device = device;
@@ -115,7 +115,7 @@ export class SmartRentPlatform implements DynamicPlatformPlugin {
       // create a new accessory
       accessory = new this.api.platformAccessory<AccessoryContext>(
         device.name,
-        uuid,
+        uuid
       );
       // store a copy of the device object in the `accessory.context`
       // the `context` property can be used to store any data about the accessory you may need
@@ -151,7 +151,7 @@ export class SmartRentPlatform implements DynamicPlatformPlugin {
       // see if an accessory with the same uuid has already been registered and restored from
       // the cached devices we stored in the `configureAccessory` method above
       const existingAccessory = this.accessories.find(
-        accessory => accessory.UUID === uuid,
+        accessory => accessory.UUID === uuid
       );
       this._initAccessory(uuid, device, existingAccessory);
       return uuid;
@@ -165,7 +165,7 @@ export class SmartRentPlatform implements DynamicPlatformPlugin {
         ]);
         this.log.info(
           'Removing existing accessory from cache:',
-          existingAccessory.displayName,
+          existingAccessory.displayName
         );
       }
     });

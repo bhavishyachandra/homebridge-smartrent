@@ -11,7 +11,7 @@ export default tseslint.config(
       indent: ['error', 2, { SwitchCase: 1 }],
       'linebreak-style': ['error', 'unix'],
       semi: ['error', 'always'],
-      'comma-dangle': ['error', 'always-multiline'],
+      'comma-dangle': ['error', 'only-multiline'],
       'dot-notation': 'error',
       eqeqeq: ['error', 'smart'],
       curly: ['error', 'all'],
@@ -36,5 +36,5 @@ export default tseslint.config(
     },
   },
   eslint.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tseslint.configs.recommended
 );

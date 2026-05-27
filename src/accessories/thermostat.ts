@@ -50,7 +50,7 @@ export class ThermostatAccessory {
 
   constructor(
     private readonly platform: SmartRentPlatform,
-    private readonly accessory: SmartRentAccessory,
+    private readonly accessory: SmartRentAccessory
   ) {
     this.state = {
       hubId: this.accessory.context.device.room.hub_id.toString(),
@@ -93,7 +93,7 @@ export class ThermostatAccessory {
       .getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(
         this.platform.Characteristic.SerialNumber,
-        this.accessory.context.device.id.toString(),
+        this.accessory.context.device.id.toString()
       );
 
     // get the Thermostat service if it exists, otherwise create a new Thermostat service
@@ -104,13 +104,13 @@ export class ThermostatAccessory {
     // set the service name, this is what is displayed as the default name on the Home app
     this.thermostatService.setCharacteristic(
       this.platform.Characteristic.Name,
-      accessory.context.device.name,
+      accessory.context.device.name
     );
 
     // create handlers for required characteristics
     this.thermostatService
       .getCharacteristic(
-        this.platform.Characteristic.CurrentHeatingCoolingState,
+        this.platform.Characteristic.CurrentHeatingCoolingState
       )
       .onGet(this.handleCurrentHeatingCoolingStateGet.bind(this));
 
@@ -139,14 +139,14 @@ export class ThermostatAccessory {
 
     this.thermostatService
       .getCharacteristic(
-        this.platform.Characteristic.CoolingThresholdTemperature,
+        this.platform.Characteristic.CoolingThresholdTemperature
       )
       .onGet(this.handleCoolingThresholdTemperatureGet.bind(this))
       .onSet(this.handleCoolingThresholdTemperatureSet.bind(this));
 
     this.thermostatService
       .getCharacteristic(
-        this.platform.Characteristic.HeatingThresholdTemperature,
+        this.platform.Characteristic.HeatingThresholdTemperature
       )
       .onGet(this.handleHeatingThresholdTemperatureGet.bind(this))
       .onSet(this.handleHeatingThresholdTemperatureSet.bind(this));
@@ -159,7 +159,7 @@ export class ThermostatAccessory {
     // set the service name, this is what is displayed as the default name on the Home app
     this.fanService.setCharacteristic(
       this.platform.Characteristic.Name,
-      accessory.context.device.name,
+      accessory.context.device.name
     );
 
     // create handlers for required characteristics
@@ -169,29 +169,29 @@ export class ThermostatAccessory {
       .onSet(this.handleOnSet.bind(this));
 
     this.platform.smartRentApi.websocket.event[this.state.deviceId] = (
-      event: WSEvent,
+      event: WSEvent
     ) => this.handleDeviceStateChanged(event);
   }
 
   private handleDeviceStateChanged(event: WSEvent) {
     this.platform.log.debug(
-      `Device ${this.state.deviceId} state changed: ${JSON.stringify(event)}`,
+      `Device ${this.state.deviceId} state changed: ${JSON.stringify(event)}`
     );
     switch (event.name) {
       case 'fan_mode': {
         const fanMode = this.toFanOnCharacteristic(
-          event.last_read_state as ThermostatFanMode,
+          event.last_read_state as ThermostatFanMode
         );
         this.state.fan_on.current = fanMode;
         this.fanService.updateCharacteristic(
           this.platform.Characteristic.On,
-          fanMode,
+          fanMode
         );
         break;
       }
       case 'mode': {
         const mode = this.toTargetHeatingCoolingStateCharacteristic(
-          event.last_read_state as ThermostatMode,
+          event.last_read_state as ThermostatMode
         );
         let actualMode = mode;
         if (
@@ -219,46 +219,46 @@ export class ThermostatAccessory {
         this.state.heating_cooling_state.target = mode;
         this.thermostatService.updateCharacteristic(
           this.platform.Characteristic.CurrentHeatingCoolingState,
-          actualMode,
+          actualMode
         );
         this.thermostatService.updateCharacteristic(
           this.platform.Characteristic.TargetHeatingCoolingState,
-          mode,
+          mode
         );
         break;
       }
       case 'cooling_setpoint': {
         const coolingSetpoint = this.toTemperatureCharacteristic(
-          Number(event.last_read_state),
+          Number(event.last_read_state)
         );
         this.state.cooling_threshold_temperature.current = coolingSetpoint;
         this.state.cooling_threshold_temperature.target = coolingSetpoint;
         this.thermostatService.updateCharacteristic(
           this.platform.Characteristic.CoolingThresholdTemperature,
-          coolingSetpoint,
+          coolingSetpoint
         );
         break;
       }
       case 'heating_setpoint': {
         const heatingSetpoint = this.toTemperatureCharacteristic(
-          Number(event.last_read_state),
+          Number(event.last_read_state)
         );
         this.state.heating_threshold_temperature.current = heatingSetpoint;
         this.state.heating_threshold_temperature.target = heatingSetpoint;
         this.thermostatService.updateCharacteristic(
           this.platform.Characteristic.HeatingThresholdTemperature,
-          heatingSetpoint,
+          heatingSetpoint
         );
         break;
       }
       case 'current_temp': {
         const temperature = this.toTemperatureCharacteristic(
-          Number(event.last_read_state),
+          Number(event.last_read_state)
         );
         this.state.current_temperature.current = temperature;
         this.thermostatService.updateCharacteristic(
           this.platform.Characteristic.CurrentTemperature,
-          temperature,
+          temperature
         );
         break;
       }
@@ -267,7 +267,7 @@ export class ThermostatAccessory {
         this.state.current_relative_humidity.current = humidity;
         this.thermostatService.updateCharacteristic(
           this.platform.Characteristic.CurrentRelativeHumidity,
-          humidity,
+          humidity
         );
         break;
       }
@@ -275,7 +275,7 @@ export class ThermostatAccessory {
   }
 
   private toCurrentHeatingCoolingStateCharacteristic(
-    thermostatMode: ThermostatMode,
+    thermostatMode: ThermostatMode
   ) {
     switch (thermostatMode) {
       case 'off':
@@ -290,7 +290,7 @@ export class ThermostatAccessory {
   }
 
   private toTargetHeatingCoolingStateCharacteristic(
-    thermostatMode: ThermostatMode,
+    thermostatMode: ThermostatMode
   ) {
     switch (thermostatMode) {
       case 'off':
@@ -307,7 +307,7 @@ export class ThermostatAccessory {
   }
 
   private fromTargetHeatingCoolingStateCharacteristic(
-    targetHeatingCoolingState,
+    targetHeatingCoolingState
   ): ThermostatMode {
     switch (targetHeatingCoolingState) {
       case this.platform.Characteristic.TargetHeatingCoolingState.OFF:
@@ -324,7 +324,7 @@ export class ThermostatAccessory {
   }
 
   private toTargetTemperatureCharacteristic(
-    thermostatAttributes: ThermostatAttributes,
+    thermostatAttributes: ThermostatAttributes
   ) {
     const { cool_target_temp, heat_target_temp, mode } = thermostatAttributes;
     switch (mode) {
@@ -390,11 +390,11 @@ export class ThermostatAccessory {
 
     const thermostatAttributes = (await this.platform.smartRentApi.getState(
       this.state.hubId,
-      this.state.deviceId,
+      this.state.deviceId
     )) as ThermostatAttributes;
 
     const currentValue = this.toCurrentHeatingCoolingStateCharacteristic(
-      thermostatAttributes.mode,
+      thermostatAttributes.mode
     );
     this.state.heating_cooling_state.current = currentValue;
     return currentValue;
@@ -408,11 +408,11 @@ export class ThermostatAccessory {
 
     const thermostatAttributes = (await this.platform.smartRentApi.getState(
       this.state.hubId,
-      this.state.deviceId,
+      this.state.deviceId
     )) as ThermostatAttributes;
 
     const currentValue = this.toTargetHeatingCoolingStateCharacteristic(
-      thermostatAttributes.mode,
+      thermostatAttributes.mode
     );
     this.state.heating_cooling_state.current = currentValue;
     return currentValue;
@@ -431,7 +431,7 @@ export class ThermostatAccessory {
       ThermostatAttributes
     >(this.state.hubId, this.state.deviceId, { mode })) as ThermostatAttributes;
     const currentValue = this.toTargetHeatingCoolingStateCharacteristic(
-      thermostatAttributes.mode,
+      thermostatAttributes.mode
     );
     this.state.heating_cooling_state.current = currentValue;
   }
@@ -444,11 +444,11 @@ export class ThermostatAccessory {
 
     const thermostatAttributes = (await this.platform.smartRentApi.getState(
       this.state.hubId,
-      this.state.deviceId,
+      this.state.deviceId
     )) as ThermostatAttributes;
 
     const currentValue = this.toTemperatureCharacteristic(
-      thermostatAttributes.current_temp,
+      thermostatAttributes.current_temp
     );
     this.state.current_temperature.current = currentValue;
     return currentValue;
@@ -462,7 +462,7 @@ export class ThermostatAccessory {
 
     const thermostatAttributes = (await this.platform.smartRentApi.getState(
       this.state.hubId,
-      this.state.deviceId,
+      this.state.deviceId
     )) as ThermostatAttributes;
 
     const currentValue =
@@ -485,7 +485,7 @@ export class ThermostatAccessory {
     >(
       this.state.hubId,
       this.state.deviceId,
-      target_temp_attributes,
+      target_temp_attributes
     )) as ThermostatAttributes;
 
     const currentValue =
@@ -520,7 +520,7 @@ export class ThermostatAccessory {
 
     const thermostatAttributes = (await this.platform.smartRentApi.getState(
       this.state.hubId,
-      this.state.deviceId,
+      this.state.deviceId
     )) as ThermostatAttributes;
 
     const currentValue = thermostatAttributes.current_humidity;
@@ -536,11 +536,11 @@ export class ThermostatAccessory {
 
     const thermostatAttributes = (await this.platform.smartRentApi.getState(
       this.state.hubId,
-      this.state.deviceId,
+      this.state.deviceId
     )) as ThermostatAttributes;
 
     const currentValue = this.toTemperatureCharacteristic(
-      thermostatAttributes.cool_target_temp,
+      thermostatAttributes.cool_target_temp
     );
     this.state.cooling_threshold_temperature.current = currentValue;
     return currentValue;
@@ -552,7 +552,7 @@ export class ThermostatAccessory {
   async handleCoolingThresholdTemperatureSet(value) {
     this.platform.log.debug(
       'Triggered SET CoolingThresholdTemperature:',
-      value,
+      value
     );
 
     this.state.cooling_threshold_temperature.target = value;
@@ -565,7 +565,7 @@ export class ThermostatAccessory {
     })) as ThermostatAttributes;
 
     const currentValue = this.toTemperatureCharacteristic(
-      thermostatAttributes.cool_target_temp,
+      thermostatAttributes.cool_target_temp
     );
     this.state.heating_threshold_temperature.current = currentValue;
   }
@@ -578,11 +578,11 @@ export class ThermostatAccessory {
 
     const thermostatAttributes = (await this.platform.smartRentApi.getState(
       this.state.hubId,
-      this.state.deviceId,
+      this.state.deviceId
     )) as ThermostatAttributes;
 
     const currentValue = this.toTemperatureCharacteristic(
-      thermostatAttributes.heat_target_temp,
+      thermostatAttributes.heat_target_temp
     );
     this.state.heating_threshold_temperature.current = currentValue;
     return currentValue;
@@ -594,7 +594,7 @@ export class ThermostatAccessory {
   async handleHeatingThresholdTemperatureSet(value) {
     this.platform.log.debug(
       'Triggered SET HeatingThresholdTemperature:',
-      value,
+      value
     );
 
     this.state.heating_threshold_temperature.target = value;
@@ -607,7 +607,7 @@ export class ThermostatAccessory {
     })) as ThermostatAttributes;
 
     const currentValue = this.toTemperatureCharacteristic(
-      thermostatAttributes.heat_target_temp,
+      thermostatAttributes.heat_target_temp
     );
     this.state.heating_threshold_temperature.current = currentValue;
   }
@@ -620,11 +620,11 @@ export class ThermostatAccessory {
 
     const thermostatAttributes = (await this.platform.smartRentApi.getState(
       this.state.hubId,
-      this.state.deviceId,
+      this.state.deviceId
     )) as ThermostatAttributes;
 
     const currentValue = this.toFanOnCharacteristic(
-      thermostatAttributes.fan_mode,
+      thermostatAttributes.fan_mode
     );
     this.state.fan_on.current = currentValue;
     return currentValue;
@@ -646,7 +646,7 @@ export class ThermostatAccessory {
       fan_mode,
     })) as ThermostatAttributes;
     const currentValue = this.toFanOnCharacteristic(
-      thermostatAttributes.fan_mode,
+      thermostatAttributes.fan_mode
     );
     this.state.fan_on.current = currentValue;
   }

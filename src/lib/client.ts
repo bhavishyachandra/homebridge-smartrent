@@ -44,7 +44,7 @@ export class SmartRentApiClient {
   constructor(readonly platform: SmartRentPlatform) {
     this.authClient = new SmartRentAuthClient(
       platform.api.user.storagePath(),
-      platform.log,
+      platform.log
     );
     this.apiClient = this._initializeApiClient();
   }
@@ -101,7 +101,7 @@ export class SmartRentApiClient {
   private _handleResponse(response: AxiosResponse) {
     this.platform.log.debug(
       'Response:',
-      JSON.stringify(response.data, null, 2),
+      JSON.stringify(response.data, null, 2)
     );
     return response;
   }
@@ -110,7 +110,7 @@ export class SmartRentApiClient {
 
   public async get<T, D = unknown>(
     path: string,
-    config?: AxiosRequestConfig<D>,
+    config?: AxiosRequestConfig<D>
   ) {
     const response = await this.apiClient.get<T>(path, config);
     return response.data;
@@ -119,7 +119,7 @@ export class SmartRentApiClient {
   public async post<T, D = unknown>(
     path: string,
     data?: D,
-    config?: AxiosRequestConfig<D>,
+    config?: AxiosRequestConfig<D>
   ) {
     const response = await this.apiClient.post<T>(path, data, config);
     return response.data;
@@ -128,7 +128,7 @@ export class SmartRentApiClient {
   public async patch<T, D = unknown>(
     path: string,
     data?: D,
-    config?: AxiosRequestConfig<D>,
+    config?: AxiosRequestConfig<D>
   ) {
     const response = await this.apiClient.patch<T>(path, data, config);
     return response.data;
@@ -182,7 +182,7 @@ export class SmartRentWebsocketClient extends SmartRentApiClient {
     const wsClient = new WebSocket(
       WS_API_URL +
         '?' +
-        new URLSearchParams({ token, vsn: WS_VERSION }).toString(),
+        new URLSearchParams({ token, vsn: WS_VERSION }).toString()
     );
     wsClient.onopen = this._handleWsOpen.bind(this);
     wsClient.onmessage = this._handleWsMessage.bind(this);
@@ -198,7 +198,7 @@ export class SmartRentWebsocketClient extends SmartRentApiClient {
 
   private _handleWsMessage(message: WebSocket.MessageEvent) {
     this.platform.log.debug(
-      `WebSocket message received: Data: ${message.data}`,
+      `WebSocket message received: Data: ${message.data}`
     );
     const data: WSPayload = JSON.parse(String(message.data));
     if (data[3].includes('attribute_state')) {
@@ -214,7 +214,7 @@ export class SmartRentWebsocketClient extends SmartRentApiClient {
 
   private _handleWsClose(event: WebSocket.CloseEvent) {
     this.platform.log.debug(
-      `WebSocket connection closed: Code: ${event.code}, Reason: ${event.reason}`,
+      `WebSocket connection closed: Code: ${event.code}, Reason: ${event.reason}`
     );
     this.wsClient = this._initializeWsClient();
   }
@@ -240,7 +240,7 @@ export class SmartRentWebsocketClient extends SmartRentApiClient {
           `devices:${deviceId}`,
           'phx_join',
           {},
-        ]),
+        ])
       );
       this.platform.log.debug(`Subscribed to device: ${deviceId}`);
     } catch (err) {
