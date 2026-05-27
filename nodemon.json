@@ -1,8 +1,8 @@
 {
-  "watch": ["src"],
-  "ext": "ts,html,css,png,svg",
+  "watch": ["lib", "src", "homebridge-ui/server.js"],
+  "ext": "ts",
   "ignore": [],
-  "exec": "npm run build && homebridge -U ./test/hbConfig -D",
+  "exec": "tsc && homebridge -I -D",
   "signal": "SIGTERM",
   "env": {
     "NODE_OPTIONS": "--trace-warnings"

@@ -1,29 +1,16 @@
-/* eslint-disable no-console */
-import {
+const {
   HomebridgePluginUiServer,
   RequestError,
-} from '@homebridge/plugin-ui-utils';
-import fs from 'node:fs';
-import { SmartRentAuthClient } from '../lib/auth.js';
-
-interface LoginPayload {
-  email?: string;
-  password?: string;
-  tfaCode?: string;
-}
+} = require('@homebridge/plugin-ui-utils');
+const fs = require('fs');
+const fsPromises = fs.promises;
+const { SmartRentAuthClient } = require('../dist/lib/auth');
 
 class PluginUiServer extends HomebridgePluginUiServer {
-  private readonly storagePath: string;
-  private readonly sessionPath: string;
-
   constructor() {
     super();
 
-    if (!this.homebridgeStoragePath) {
-      throw new Error('Homebridge storage path is not available');
-    }
-    this.storagePath = this.homebridgeStoragePath;
-    this.sessionPath = `${this.storagePath}/smartrent/session.json`;
+    this.sessionPath = `${this.homebridgeStoragePath}/smartrent/session.json`;
 
     this.onRequest('/session', this.checkSession.bind(this));
     this.onRequest('/logout', this.clearSession.bind(this));
@@ -40,7 +27,7 @@ class PluginUiServer extends HomebridgePluginUiServer {
       return { code: 404 };
     } catch (error) {
       throw new RequestError('Failed to check session', {
-        message: (error as Error).message,
+        message: error.message,
       });
     }
   }
@@ -48,17 +35,17 @@ class PluginUiServer extends HomebridgePluginUiServer {
   async clearSession() {
     try {
       if ((await this.checkSession()).code === 200) {
-        await fs.promises.rm(this.sessionPath);
+        await fsPromises.rm(this.sessionPath);
       }
       return { code: 200 };
     } catch (error) {
       throw new RequestError('Failed to delete auth token', {
-        message: (error as Error).message,
+        message: error.message,
       });
     }
   }
 
-  async login(payload: LoginPayload) {
+  async login(payload) {
     try {
       const { email, password, tfaCode } = payload;
       if (!email) {
@@ -69,7 +56,7 @@ class PluginUiServer extends HomebridgePluginUiServer {
         console.error('Password required');
         return { code: 401, message: 'Password required' };
       }
-      const authClient = new SmartRentAuthClient(this.storagePath);
+      const authClient = new SmartRentAuthClient(this.homebridgeStoragePath);
       const accessToken = await authClient.getAccessToken({
         email,
         password,
@@ -87,7 +74,7 @@ class PluginUiServer extends HomebridgePluginUiServer {
       return { code: 403, message: 'Invalid email or password' };
     } catch (error) {
       throw new RequestError('Failed to login to SmartRent', {
-        message: (error as Error).message,
+        message: error.message,
       });
     }
   }

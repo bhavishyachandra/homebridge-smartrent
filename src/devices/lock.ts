@@ -1,4 +1,4 @@
-import { DeviceData, Device } from './base.js';
+import { DeviceData, Device } from './base';
 
 export type LockAttributes = {
   access_codes_supported: boolean;

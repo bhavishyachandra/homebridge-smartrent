@@ -2,11 +2,10 @@ import {
   API,
   DynamicPlatformPlugin,
   Logger,
-  PlatformAccessory,
   Service,
   Characteristic,
 } from 'homebridge';
-import { PLATFORM_NAME, PLUGIN_NAME } from './settings.js';
+import { PLATFORM_NAME, PLUGIN_NAME } from './settings';
 import {
   AccessoryContext,
   SmartRentAccessory,
@@ -15,17 +14,18 @@ import {
   SwitchAccessory,
   ThermostatAccessory,
   SwitchMultilevelAccessory,
-} from './accessories/index.js';
-import { SmartRentApi } from './lib/api.js';
-import { DeviceDataUnion } from './devices/index.js';
-import { SmartRentPlatformConfig } from './lib/config.js';
+} from './accessories';
+import { SmartRentApi } from './lib/api';
+import { DeviceDataUnion } from './devices';
+import { SmartRentPlatformConfig } from './lib/config';
 
 /**
  * SmartRentPlatform
  */
 export class SmartRentPlatform implements DynamicPlatformPlugin {
-  public readonly Service: typeof Service;
-  public readonly Characteristic: typeof Characteristic;
+  public readonly Service: typeof Service = this.api.hap.Service;
+  public readonly Characteristic: typeof Characteristic =
+    this.api.hap.Characteristic;
 
   public readonly smartRentApi: SmartRentApi;
   public readonly accessories: SmartRentAccessory[] = [];
@@ -35,8 +35,6 @@ export class SmartRentPlatform implements DynamicPlatformPlugin {
     public readonly config: SmartRentPlatformConfig,
     public readonly api: API
   ) {
-    this.Service = this.api.hap.Service;
-    this.Characteristic = this.api.hap.Characteristic;
     log.debug(`Initializing ${this.config.name} platform`);
     this.smartRentApi = new SmartRentApi(this);
     log.debug('Finished initializing platform:', this.config.name);
@@ -49,11 +47,11 @@ export class SmartRentPlatform implements DynamicPlatformPlugin {
     });
   }
 
-  configureAccessory(accessory: PlatformAccessory) {
+  configureAccessory(accessory: SmartRentAccessory) {
     this.log.info('Loading accessory from cache:', accessory.displayName);
 
     // add the restored accessory to the accessories cache so we can track if it has already been registered
-    this.accessories.push(accessory as SmartRentAccessory);
+    this.accessories.push(accessory);
   }
 
   private _initAccessory(

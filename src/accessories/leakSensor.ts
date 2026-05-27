@@ -1,7 +1,7 @@
 import { Service, CharacteristicValue } from 'homebridge';
-import { SmartRentPlatform } from '../platform.js';
-import type { SmartRentAccessory } from './index.js';
-import { WSEvent } from '../lib/client.js';
+import { SmartRentPlatform } from '../platform';
+import type { SmartRentAccessory } from '.';
+import { WSEvent } from '../lib/client';
 
 /**
  * Leak Sensor Accessory
@@ -91,7 +91,7 @@ export class LeakSensorAccessory {
   handleDeviceStateChanged(event: WSEvent) {
     this.platform.log.debug('Received websocket leak event:', event);
     switch (event.name) {
-      case 'leak': {
+      case 'leak':
         const leak = this._getLeakDetectedCharacteristicValue(
           event.last_read_state === 'true'
         );
@@ -101,7 +101,6 @@ export class LeakSensorAccessory {
           leak
         );
         break;
-      }
     }
   }
 }

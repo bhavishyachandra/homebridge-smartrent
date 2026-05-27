@@ -1,8 +1,8 @@
 import { Service, CharacteristicValue } from 'homebridge';
-import { SmartRentPlatform } from '../platform.js';
-import type { SmartRentAccessory } from './index.js';
-import { Switch, SwitchAttributes } from './../devices/index.js';
-import { WSEvent } from '../lib/client.js';
+import { SmartRentPlatform } from '../platform';
+import type { SmartRentAccessory } from '.';
+import { Switch, SwitchAttributes } from './../devices';
+import { WSEvent } from '../lib/client';
 
 /**
  * Switch Accessory

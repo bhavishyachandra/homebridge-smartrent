@@ -1,11 +1,13 @@
-import { SmartRentPlatform } from '../platform.js';
-import { SmartRentApiClient, SmartRentWebsocketClient } from './client.js';
+import { SmartRentPlatform } from '../platform';
+import { SmartRentApiClient, SmartRentWebsocketClient } from './client';
 import {
   BaseDeviceResponse,
   BaseDeviceDataResponse,
   BaseDeviceAttributes,
   DeviceDataUnion,
-} from '../devices/index.js';
+  DeviceData,
+  Device,
+} from '../devices';
 
 type UnitData = {
   building: string;
@@ -77,7 +79,6 @@ type RoomRecordsData = {
   devices: DeviceDataUnion[];
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type RoomRecords = {
   data: RoomRecordsData[];
 };
@@ -120,7 +121,7 @@ export class SmartRentApi {
       `/hubs/${hubId}/devices`
     );
     const devicesData = devices.data;
-    this.platform.log.info('Devices Found: ', devicesData);
+    this.platform.log.info(`Devices Found: `, devicesData);
 
     if (devicesData.length) {
       this.platform.log.info(`Found ${devicesData.length} devices`);
@@ -162,7 +163,7 @@ export class SmartRentApi {
 
   public async setState<
     Device extends BaseDeviceResponse,
-    A extends BaseDeviceAttributes,
+    A extends BaseDeviceAttributes
   >(hubId: string, deviceId: string, attributes: Partial<A>) {
     const device = await this.client.patch<Device>(
       `/hubs/${hubId}/devices/${deviceId}`,

@@ -3,8 +3,8 @@ import axios, { AxiosResponse, AxiosInstance, AxiosError } from 'axios';
 import { existsSync, promises as fsPromises } from 'fs';
 import { URLSearchParams } from 'url';
 import { resolve as pathResolve } from 'path';
-import { SmartRentPlatformConfig } from './config.js';
-import { API_URL, AUTH_CLIENT_HEADERS } from './request.js';
+import { SmartRentPlatformConfig } from './config';
+import { API_URL, AUTH_CLIENT_HEADERS } from './request';
 
 /** Credentials stored in config.json */
 type ConfigCredentials = Pick<
@@ -70,7 +70,7 @@ export class SmartRentAuthClient {
     this.storagePath = storagePath;
     this.pluginPath = pathResolve(this.storagePath, 'smartrent');
     this.sessionPath = pathResolve(this.pluginPath, 'session.json');
-    this.log = log ?? (console as unknown as Logger);
+    this.log = log ?? console;
     this.client = this._initializeClient();
   }
 
