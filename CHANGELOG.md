@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.0](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.4.4...v1.5.0) (2026-05-27)
+
+
+### Features
+
+* add motion sensor support; fix dimmer brightness and thermostat state handling ([#83](https://github.com/bhavishyachandra/homebridge-smartrent/issues/83)) ([b7d3812](https://github.com/bhavishyachandra/homebridge-smartrent/commit/b7d38122287ca624c4c5fe639caa5bae717e095f))
+
 ## [1.4.4](https://github.com/bhavishyachandra/homebridge-smartrent/compare/v1.4.3...v1.4.4) (2026-05-21)
 
 
